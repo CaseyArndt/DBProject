@@ -1,20 +1,6 @@
 #from flask_table import Table, Col
 import itertools
 
-"""
-class CustomerTable(Table):
-    first_name = Col("First Name")
-    last_name = Col("Last Name")
-    email = Col("Email")
-    phone_number = Col("Phone Number")
-    street_address = Col("Street Address")
-    city = Col("City")
-    state = Col("State")
-    zip_code = Col("Zip Code")
-    actions = Col("Actions")
-"""
-
-
 class Customer(object):
     new_id = itertools.count()
     def __init__(self, first_name: str, last_name: str, email: str, phone_number: str, \
@@ -39,6 +25,16 @@ class Order(object):
         self.total_price = total_price
         self.order_date = order_date
         self.order_comments = order_comments
+
+
+class OrderItem(object):
+    new_id = itertools.count()
+    def __init__(self, order_id: int, product_id: int, item_quantity: int, item_price: float):
+        self.item_id = next(self.new_id)
+        self.order_id = order_id
+        self.product_id = product_id
+        self.item_quantity = item_quantity
+        self.item_price = item_price
 
 
 class Shipment(object):
@@ -67,10 +63,3 @@ class Category(object):
         self.category_name = category_name
         self.category_description = category_description
 
-
-if __name__ == "__main__":
-    Bob = Customer("Bob", "James", "bobjames@gmail.com", "16207943788", "1234 Generic Street", "Cityville", "Oregon", "66801")
-    Bill = Customer("Bill", "James", "billjames@gmail.com", "16207943789", "1234 Generic Street", "Cityville", "Oregon", "66801")
-
-    shipment_1 = Shipment(101, "1423432423XYZ", "01-01-2021")
-    print(Bob.customer_id, Bill.customer_id, shipment_1.shipment_id)

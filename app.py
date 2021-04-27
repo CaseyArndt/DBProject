@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect
-from classes import *
+from db import *
 
 DEBUG = False
 customer_list = []
 order_list = []
+order_item_list = [OrderItem(1, 1, 1, 100.00)]
 shipment_list = []
 product_list = []
 category_list = []
@@ -139,6 +140,63 @@ def update_order(id):
         return render_template('updateorder.html', order = order)
 
 
+"""
+ORDER ITEMS
+"""
+
+@app.route('/orderitems', methods=['POST', 'GET'])
+def order_items():
+    if request.method == 'POST':
+        try:
+            order_id = request.form['order_id']
+            product_id = request.form['product_id']
+            item_quantity= request.form['item_quantity']
+            item_price = request.form['item_price']
+
+            order_item = OrderItem(order_id, product_id, item_quantity, item_price) 
+
+            order_item_list.append(order_item)
+        
+            return redirect('/orderitems')
+
+        except:
+            return "There was an issue adding the Order Item."
+
+    else:
+        return render_template('orderitems.html', order_item_list = order_item_list)
+
+
+@app.route('/deleteorderitem/<int:id>')
+def delete_order_item(id):
+    try:
+        for order_item in order_item_list:
+            if order_item.item_id == id:
+                order_item_list.remove(order_item)
+                return redirect('/orderitems')
+    except:
+        return "There was an error deleting this Order Item."
+
+
+@app.route('/updateorderitem/<int:id>', methods=['POST', 'GET'])
+def update_order_item(id):
+    for order_item in order_item_list:
+        if order_item.item_id == id:
+            break
+
+    if request.method == 'POST':
+        try:
+            order_item.order_id = request.form['order_id']
+            order_item.product_id = request.form['product_id']
+            order_item.item_quantity = request.form['item_quantity']
+            order_item.item_price = request.form['item_price']
+
+            return redirect('/orderitems')
+
+        except:
+            return "There was an error updating this Order Item."
+
+    else:
+        return render_template('updateorderitem.html', order_item = order_item)
 
 """
 SHIPMENTS
