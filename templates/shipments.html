@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Manage Shipments</title>
+{% endblock %}
+
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Manage Shipments</h1>
+    {% if shipment_list|length < 1 %}
+    <h4>There are no shipments. Add one below.</h4>
+    {% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Tracking Number</th>
+                <th>Date Shipped</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for shipment in shipment_list %}
+            <tr>
+                <td>{{ shipment.order_id }}</td>
+                <td>{{ shipment.tracking_number }}</td>
+                <td>{{ shipment.date_shipped }}</td>
+
+                <td>
+                    <a href="/updateshipment/{{shipment.shipment_id}}">Update</a>
+                    <br>
+                    <a href="/deleteshipment/{{shipment.shipment_id}}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <br>
+    <h1 style="text-align: center">Add New Shipment</h1>
+    <div class="form">
+        <form action="/shipments" method="POST">
+            <input type="text" name="order_id" id="order_id" value="Order ID">
+            <input type="text" name="tracking_number" id ="tracking_number" value ="Tracking Number">
+            <input type="text" name="date_shipped" id ="date_shipped" value ="Date Shipped">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+</div>
+{% endblock %}

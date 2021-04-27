@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Update Customer</title>
+{% endblock %}
+
+
+{% block body %}
+<div class="content">
+
+    <h1 style="text-align: center">Update Customer</h1>
+    <div class="form">
+        <form action="/updatecustomer/{{customer.customer_id}}" method="POST">
+            <input type="text" name="first_name" id="first_name" value="{{customer.first_name}}">
+            <input type="text" name="last_name" id ="last_name" value ="{{customer.last_name}}">
+            <input type="text" name="email" id ="email" value ="{{customer.email}}">
+            <input type="text" name="phone_number" id ="phone_number" value ="{{customer.phone_number}}">
+            <input type="text" name="street_address" id ="street_address" value ="{{customer.street_address}}">
+            <input type="text" name="city" id ="city" value ="{{customer.city}}">
+            <input type="text" name="state" id ="state" value ="{{customer.state}}">
+            <input type="text" name="zip_code" id ="zip_code" value ="{{customer.zip_code}}">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+</div>
+{% endblock %}

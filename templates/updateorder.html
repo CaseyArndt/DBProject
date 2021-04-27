@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Update Order</title>
+{% endblock %}
+
+
+{% block body %}
+<div class="content">
+
+    <h1 style="text-align: center">Update Order</h1>
+    <div class="form">
+        <form action="/updateorder/{{order.order_id}}" method="POST">
+            <input type="text" name="customer_id" id="customer_id" value="{{order.customer_id}}">
+            <input type="text" name="total_price" id ="total_price" value ="{{order.total_price}}">
+            <input type="text" name="order_date" id ="order_date" value ="{{order.order_date}}">
+            <input type="text" name="order_comments" id ="order_comments" value ="{{order.order_comments}}">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+</div>
+{% endblock %}
