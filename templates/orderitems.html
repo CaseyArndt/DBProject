@@ -13,7 +13,7 @@
     {% else %}
     <table>
         <thead>
-            <tr>
+            <tr class>
                 <th>Order ID</th>
                 <th>Product ID</th>
                 <th>Order Item Quantity</th>
@@ -43,10 +43,10 @@
     <h1 style="text-align: center">Add New Order Item</h1>
     <div class="form">
         <form action="/orderitems" method="POST">
-            <input type="text" name="order_id" id="order_id" value="Order ID">
-            <input type="text" name="product_id" id ="product_id" value ="Product ID">
-            <input type="text" name="item_quantity" id ="item_quantity" value ="Item Quantity">
-            <input type="text" name="item_price" id ="item_price" value ="Item Price">
+            <input type="text" name="order_id" id="order_id" placeholder="Order ID">
+            <input type="text" name="product_id" id ="product_id" placeholder="Product ID">
+            <input type="text" name="item_quantity" id ="item_quantity" placeholder="Item Quantity">
+            <input type="text" name="item_price" id ="item_price" placeholder="Item Price">
             <input type="submit" value="Submit">
         </form>
     </div>

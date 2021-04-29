@@ -1,0 +1,57 @@
+body {
+    background-color: #FFFACD;
+}
+
+table {
+    border-spacing: 30px;
+}
+
+.navbar{
+    background-color: #556B2F;
+    overflow: hidden;
+    height: 50px;
+}
+
+.navbar a{
+    float: left;
+    color: #F0F8FF;
+    text-align: center;
+    font-size: 17px;
+    text-decoration: none;
+    padding: 15px;
+}
+
+.navbar a:hover{
+    background-color: #F0F8FF;
+    color: #556B2F;
+}
+
+.navbar a.active{
+    background-color: #F0F8FF;
+    color: #556B2F;
+}
+
+.store {
+    font-size: 80px;
+    text-align: center;
+    padding-top: 100px;
+}
+
+.tagline{
+    font-size: 50px;
+    text-align: center;
+}
+
+.firstP{
+    font-size: 20px;
+    text-align: center;
+}
+
+.secondP{
+    font-size: 20px;
+    text-align: center;
+}
+
+input[type=text]:focus{
+    border: 2px solid black;
+}
