@@ -9,11 +9,23 @@
 <div class="container">
     <h1 class="text-center">Update Order Item</h1>
     <form action="/updateorderitem/{{order_item.item_id}}" method="POST" class="text-center">
-        <div class="form-group">
-            <input type="text" name="order_id" id="order_id" {% if order_item.order_id %} value="{{order_item.order_id}}" {% else %} placeholder="Order ID" {% endif %}>
-            <input type="text" name="product_id" id ="product_id" {% if order_item.product_id %} value="{{order_item.product_id}}" {% else %} placeholder="Product ID" {% endif %}>
-            <input type="text" name="item_quantity" id ="item_quantity" {% if order_item.item_quantity %} value="{{order_item.item_quantity}}" {% else %} placeholder="Item Quantity" {% endif %}>
-            <input type="text" name="item_price" id ="item_price" {% if order_item.item_price %} value ="{{order_item.item_price}}" {% else %} placeholder="Item Price" {% endif %}>
+        <div class="row">
+            <div class="col">
+                <label for="order_id">Order ID</label>
+                <input type="text" class="form-control" name="order_id" id="order_id" value="{{order_item.order_id}}">                
+            </div>
+            <div class="col">
+                <label for="product_id">Product ID</label>
+                <input type="text" class="form-control" name="product_id" id ="product_id" value="{{order_item.product_id}}">
+            </div>
+            <div class="col">
+                <label for="item_quantity">Item Quantity</label>
+                <input type="text" class="form-control" name="item_quantity" id ="item_quantity" value="{{order_item.item_quantity}}">
+            </div>
+            <div class="col">
+                <label for="item_price">Item Price</label>
+                <input type="text" class="form-control" name="item_price" id ="item_price" value ="{{order_item.item_price}}">
+            </div>
         </div>
         <br>
         <div class="text-center">

@@ -9,11 +9,23 @@
 <div class="container">
     <h1 class="text-center">Update Product</h1>
     <form action="/updateproduct/{{product.product_id}}" method="POST" class="text-center">
-        <div class="form-group">
-            <input type="text" name="product_name" id="product_name" {% if product.product_name %} value="{{product.product_name}}" {% else %} placeholder="Product Name" {% endif %}>
-            <input type="text" name="product_inventory" id ="product_inventory" {% if product.product_inventory %} value="{{product.product_inventory}}" {% else %} placeholder="Product Inventory" {% endif %}>
-            <input type="text" name="product_price" id ="product_price" {% if product.product_price %} value="{{product.product_price}}" {% else %} placeholder="Product Price" {% endif %}>
-            <input type="text" name="product_description" id ="product_description" {% if product.product_description %} value="{{product.product_description}}" {% else %} placeholder="Product Description" {% endif %}>
+        <div class="row">
+            <div class="col">
+                <label for="product_name">Product Name</label>
+                <input type="text" class="form-control" name="product_name" id="product_name" value="{{product.product_name}}">
+            </div>
+            <div class="col">
+                <label for="product_inventory">Product Inventory</label>
+                <input type="text" class="form-control" name="product_inventory" id ="product_inventory" value="{{product.product_inventory}}">
+            </div>
+            <div class="col">
+                <label for="product_price">Product Price</label>
+                <input type="text" class="form-control" name="product_price" id ="product_price" value="{{product.product_price}}">
+            </div>
+            <div class="col">
+                <label for="product_description">Product Description</label>
+                <input type="text" class="form-control" name="product_description" id ="product_description" value="{{product.product_description}}">
+            </div>
         </div>
         <br>
         <div class="text-center">

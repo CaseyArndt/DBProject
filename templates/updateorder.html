@@ -10,11 +10,23 @@
 
     <h1 class="text-center">Update Order</h1>
     <form action="/updateorder/{{order.order_id}}" method="POST" class="text-center">
-        <div class="form-group">
-            <input type="text" name="customer_id" id="customer_id" {% if order.customer_id %} value="{{order.customer_id}}" {% else %} placeholder="Customer ID" {% endif %}>
-            <input type="text" name="total_price" id ="total_price" {% if order.total_price %} value="{{order.total_price}}" {% else %} placeholder="Total Price" {% endif %}>
-            <input type="text" name="order_date" id ="order_date" {% if order.order_date %} value="{{order.order_date}}" {% else %} placeholder="Order Date" {% endif %}>
-            <input type="text" name="order_comments" id ="order_comments" {% if order.order_comments %} value="{{order.order_comments}}" {% else %} placeholder="Order Comments" {% endif %}>
+        <div class="row">
+            <div class="col">
+                <label for="customer_id">Customer ID</label>
+                <input type="text" class="form-control" name="customer_id" id="customer_id" value="{{order.customer_id}}">
+            </div>
+            <div class="col">
+                <label for="total_price">Total Price</label>
+                <input type="text" class="form-control" name="total_price" id ="total_price" value="{{order.total_price}}">
+            </div>
+            <div class="col">
+                <label for="order_date">Order Date</label>
+                <input type="text" class="form-control" name="order_date" id ="order_date" value="{{order.order_date}}">
+            </div>
+            <div class="col">
+                <label for="order_comments">Order Comments</label>
+                <input type="text" class="form-control" name="order_comments" id ="order_comments" value="{{order.order_comments}}">
+            </div>
         </div>
         <br>
         <div class="text-center">

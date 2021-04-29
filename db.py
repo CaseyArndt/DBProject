@@ -77,9 +77,9 @@ order_item_list = [OrderItem(0, 0, 1, 7.59),
 shipment_list = [Shipment(0, "1Z12345E0205271688", "10/14/2019"),
                  Shipment(1, "1Z12345E6605272234", "02/26/2021"),
                  Shipment(2, "1Z12345E0305271640", "04/29/2021")]
-product_list = [Product("", 50, 7.59),
-                Product("", 99, 27.34),
-                Product("", 0, 21.79)]
+product_list = [Product("Arabian Jasmine Seeds", 50, 7.59),
+                Product("3 Gallon Clay Pots (Set of 5)", 99, 27.34),
+                Product("Organic Fertilizer", 0, 21.79)]
 category_list = [Category("Flower Seeds"),
                  Category("Flower Seedlings"),
                  Category("Potting Soil")]

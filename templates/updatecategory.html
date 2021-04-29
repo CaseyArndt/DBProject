@@ -9,9 +9,15 @@
 <div class="container">
     <h1 class="text-center">Update Category</h1>
     <form action="/updatecategory/{{category.category_id}}" method="POST" class="text-center">
-        <div class="form-group">
-            <input type="text" name="category_name" id="category_name" {% if category.category_name %} value="{{category.category_name}}" {% else %} placeholder="Category Name" {% endif %}>
-            <input type="text" name="category_description" id ="category_description" {% if category.category_description %} value="{{category.category_description}}" {% else %} placeholder="Category Description" {% endif %}>
+        <div class="row">
+            <div class="col">
+                <label for="category_name">Category Name</label>
+                <input type="text" class="form-control" name="category_name" id="category_name" value="{{category.category_name}}">
+            </div>
+            <div class="col">
+                <label for="Category Description">Category Description</label>
+                <input type="text" class="form-control" name="category_description" id ="category_description" value="{{category.category_description}}">
+            </div>
         </div>
         <br>
         <div class="text-center">

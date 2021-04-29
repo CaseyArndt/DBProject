@@ -9,10 +9,19 @@
 <div class="container">
     <h1 class="text-center">Update Shipment</h1>
     <form action="/updateshipment/{{shipment.shipment_id}}" method="POST" class="text-center">
-        <div class="form-group">
-            <input type="text" name="order_id" id="order_id" {% if shipment.order_id %} value="{{shipment.order_id}}" {% else %} placeholder="Order ID" {% endif %}>
-            <input type="text" name="tracking_number" id ="tracking_number" {% if shipment.tracking_number %} value="{{shipment.tracking_number}}" {% else %} placeholder="Tracking Number" {% endif %}>
-            <input type="text" name="date_shipped" id ="date_shipped" value ="{{shipment.date_shipped}}">
+        <div class="row">
+            <div class="col">
+                <label for="order_id">Order ID</label>
+                <input type="text" class="form-control" name="order_id" id="order_id" value="{{shipment.order_id}}">
+            </div>
+            <div class="col">
+                <label for="tracking_number">Tracking Number</label>
+                <input type="text" class="form-control" name="tracking_number" id ="tracking_number" value="{{shipment.tracking_number}}">
+            </div>
+            <div class="col">
+                <label for="date_shipped">Date Shipped</label>
+                <input type="text" class="form-control" name="date_shipped" id ="date_shipped" value ="{{shipment.date_shipped}}">
+            </div>
         </div>
         <br>
         <div class="text-center">
