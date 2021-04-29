@@ -6,49 +6,62 @@
 
 
 {% block body %}
-<div class="content">
-    <h1 style="text-align: center">Manage Products</h1>
+<div class="container" style="padding: 10px;">
+    <h1 class="text-center">Add New Product</h1>
+    <div class="form">
+        <form action="/products" method="POST" class="text-center">
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" name="product_name" id="product_name" placeholder="Product Name">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" name="product_inventory" id ="product_inventory" placeholder="Product Inventory">                    
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" name="product_price" id ="product_price" placeholder="Product Price">                    
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" name="product_description" id ="product_description" placeholder="Product Description">                    
+                </div>
+            </div>
+            <br>
+            <div class="text-center">
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<div class="container">
+    <h1 class="text-center">Manage Products</h1>
     {% if product_list|length < 1 %}
-    <h4>There are no Products. Add one below.</h4>
+    <h4>There are no Products. Add one above.</h4>
     {% else %}
-    <table>
+    <table class="table">
         <thead>
             <tr>
-                <th>Product Name</th>
-                <th>Product Inventory</th>
-                <th>Product Price</th>
-                <th>Product Description</th>
-                <th>Actions</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Inventory</th>
+                <th scope="col">Product Price</th>
+                <th scope="col">Product Description</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for product in product_list %}
             <tr>
-                <td>{{ product.product_name }}</td>
-                <td>{{ product.product_inventory }}</td>
-                <td>{{ product.product_price }}</td>
-                <td>{{ product.product_description }}</td>
-                <td>
-                    <a href="/updateproduct/{{product.product_id}}">Update</a>
-                    <br>
-                    <a href="/deleteproduct/{{product.product_id}}">Delete</a>
+                <td scope="row">{{ product.product_name }}</td>
+                <td scope="row">{{ product.product_inventory }}</td>
+                <td scope="row">{{ product.product_price }}</td>
+                <td scope="row">{{ product.product_description }}</td>
+                <td scope="row">
+                    <a href="/updateproduct/{{product.product_id}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deleteproduct/{{product.product_id}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% endif %}
-    <br>
-    <h1 style="text-align: center">Add New Product</h1>
-    <div class="form">
-        <form action="/products" method="POST">
-            <input type="text" name="product_name" id="product_name" value="Product Name">
-            <input type="text" name="product_inventory" id ="product_inventory" value ="Product Inventory">
-            <input type="text" name="product_price" id ="product_price" value ="Product Price">
-            <input type="text" name="product_description" id ="product_description" value ="Product Description">
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-
 </div>
 {% endblock %}

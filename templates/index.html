@@ -6,7 +6,38 @@
 
 
 {% block body %}
-<div class="content">
+<div class="container">
+    <h1 class="text-center" style="padding: 10px;">Search Tables</h1>
+    <form>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="table">Select Table</label>
+                <select class="form-control" id="table">
+                    <option selected>Choose...</option>
+                    <option value="Customers">Customers</option>
+                    <option value="Orders">Orders</option>
+                    <option value="OrderItems">Order Items</option>
+                    <option value="Shipments">Shipments</option>
+                    <option value="Products">Products</option>
+                    <option value="Categories">Categories</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="attribute">Select Attribute</label>
+                <select class="form-control" id="attribute">
+                    <option selected>Implement Later</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="query">Enter Query</label>
+                <input type="text" class="form-control" name="query" id="query" placeholder="Implement Later">
+            </div>
 
+        </div>
+        <br>
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">Submit Query</button>
+        </div>
+    </form>
 </div>
 {% endblock %}

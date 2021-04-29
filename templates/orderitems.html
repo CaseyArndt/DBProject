@@ -6,50 +6,60 @@
 
 
 {% block body %}
-<div class="content">
-    <h1 style="text-align: center">Manage Order Items</h1>
+<div class="container">
+    <h1 class="text-center" style="padding: 10px;">Add New Order Item</h1>
+    <form action="/orderitems" method="POST" class="text-center">
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" name="order_id" id="order_id" placeholder="Order ID">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="product_id" id ="product_id" placeholder="Product ID">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="item_quantity" id ="item_quantity" placeholder="Item Quantity">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="item_price" id ="item_price" placeholder="Item Price">
+            </div>
+        </div>
+        <br>
+        <div class="form-group text-center">
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </div>
+    </form>
+</div>
+<br>
+<div class="container">
+    <h1 class="text-center">Manage Order Items</h1>
     {% if order_item_list|length < 1 %}
-    <h4>There are no Order Items. Add one below.</h4>
+    <h4>There are no Order Items. Add one above.</h4>
     {% else %}
-    <table>
+    <table class="table">
         <thead>
             <tr>
-                <th>Order ID</th>
-                <th>Product ID</th>
-                <th>Order Item Quantity</th>
-                <th>Order Item Price</th>
-                <th>Actions</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">Product ID</th>
+                <th scope="col">Order Item Quantity</th>
+                <th scope="col">Order Item Price</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for order_item in order_item_list %}
             <tr>
-                <td>{{ order_item.order_id }}</td>
-                <td>{{ order_item.product_id }}</td>
-                <td>{{ order_item.item_quantity }}</td>
-                <td>{{ order_item.item_price }}</td>
-
-                <td>
-                    <a href="/updateorderitem/{{order_item.item_id}}">Update</a>
-                    <br>
-                    <a href="/deleteorderitem/{{order_item.item_id}}">Delete</a>
+                <td scope="row">{{ order_item.order_id }}</td>
+                <td scope="row">{{ order_item.product_id }}</td>
+                <td scope="row">{{ order_item.item_quantity }}</td>
+                <td scope="row">{{ order_item.item_price }}</td>
+                <td scope="row">
+                    <a href="/updateorderitem/{{order_item.item_id}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deleteorderitem/{{order_item.item_id}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% endif %}
-    <br>
-    <h1 style="text-align: center">Add New Order Item</h1>
-    <div class="form">
-        <form action="/orderitems" method="POST">
-            <input type="text" name="order_id" id="order_id" value="Order ID">
-            <input type="text" name="product_id" id ="product_id" value ="Product ID">
-            <input type="text" name="item_quantity" id ="item_quantity" value ="Item Quantity">
-            <input type="text" name="item_price" id ="item_price" value ="Item Price">
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-
 </div>
 {% endblock %}

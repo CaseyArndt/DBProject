@@ -2,12 +2,6 @@ from flask import Flask, render_template, request, redirect
 from db import *
 
 DEBUG = False
-customer_list = []
-order_list = []
-order_item_list = [OrderItem(1, 1, 1, 100.00)]
-shipment_list = []
-product_list = []
-category_list = []
 
 app = Flask(__name__)
 

@@ -58,8 +58,28 @@ class Product(object):
 
 class Category(object):
     new_id = itertools.count()
-    def __init__(self, category_name: str, category_description: str):
+    def __init__(self, category_name: str, category_description: str = ""):
         self.category_id = next(self.new_id)
         self.category_name = category_name
         self.category_description = category_description
 
+
+
+customer_list = [Customer("Sterling", "Archer", "duchess@isis.gov", "212-220-5240", "2 N. Trenton Street", "New York", "New York", "10016"),
+                 Customer("Cyril", "Figgis", "chetmanley@isis.gov", "718-380-1669", "8248 S. Cobblestone St.", "Staten Island", "New York", "10312"),
+                 Customer("Lana", "Kane", "shehulk@isis.gov", "646-391-2933", "70 North Pumpkin Hill Street", "Bronx", "New York", "10457")]
+order_list = [Order(0, 101.20, "10/10/2019"),
+              Order(0, 27.34, "02/24/2021"),
+              Order(2, 30.92, "04/26/2021")]
+order_item_list = [OrderItem(0, 0, 1, 7.59),
+                   OrderItem(0, 2, 2, 21.79),
+                   OrderItem(0, 1, 1, 27.34)]
+shipment_list = [Shipment(0, "1Z12345E0205271688", "10/14/2019"),
+                 Shipment(1, "1Z12345E6605272234", "02/26/2021"),
+                 Shipment(2, "1Z12345E0305271640", "04/29/2021")]
+product_list = [Product("", 50, 7.59),
+                Product("", 99, 27.34),
+                Product("", 0, 21.79)]
+category_list = [Category("Flower Seeds"),
+                 Category("Flower Seedlings"),
+                 Category("Potting Soil")]

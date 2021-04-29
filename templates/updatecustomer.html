@@ -6,22 +6,26 @@
 
 
 {% block body %}
-<div class="content">
-
-    <h1 style="text-align: center">Update Customer</h1>
-    <div class="form">
-        <form action="/updatecustomer/{{customer.customer_id}}" method="POST">
-            <input type="text" name="first_name" id="first_name" value="{{customer.first_name}}">
-            <input type="text" name="last_name" id ="last_name" value ="{{customer.last_name}}">
-            <input type="text" name="email" id ="email" value ="{{customer.email}}">
-            <input type="text" name="phone_number" id ="phone_number" value ="{{customer.phone_number}}">
-            <input type="text" name="street_address" id ="street_address" value ="{{customer.street_address}}">
-            <input type="text" name="city" id ="city" value ="{{customer.city}}">
-            <input type="text" name="state" id ="state" value ="{{customer.state}}">
-            <input type="text" name="zip_code" id ="zip_code" value ="{{customer.zip_code}}">
-            <input type="submit" value="Submit">
+<div class="container">
+    <h1 class="text-center">Update Customer</h1>
+        <form action="/updatecustomer/{{customer.customer_id}}" method="POST" class="text-center">
+            <div class="form-group">
+                <input type="text" name="first_name" id="first_name" {% if customer.first_name %} value="{{customer.first_name}}" {% else %} placeholder="First Name" {% endif %}>
+                <input type="text" name="last_name" id ="last_name" {% if customer.last_name %} value="{{customer.last_name}}" {% else %} placeholder="Last Name" {% endif %}>
+                <input type="text" name="email" id ="email" {% if customer.email %} value="{{customer.email}}" {% else %} placeholder="Email" {% endif %}>
+                <input type="text" name="phone_number" id ="phone_number" {% if customer.phone_number %} value ="{{customer.phone_number}}" {% else %} placeholder="Phone Number" {% endif %}>
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="text" name="street_address" id ="street_address" {% if customer.street_address %} value="{{customer.street_address}}" {% else %} placeholder="Street Address" {% endif %}>
+                <input type="text" name="city" id ="city" {% if customer.city %} value ="{{customer.city}}" {% else %} placeholder="City" {% endif %}>
+                <input type="text" name="state" id ="state" {% if customer.state %} value ="{{customer.state}}" {% else %} placeholder="State" {% endif %}>
+                <input type="text" name="zip_code" id ="zip_code" {% if customer.zip_code %} value ="{{customer.zip_code}}" {% else %} placeholder="Zip Code" {% endif %}>
+            </div>
+            <br>
+            <div class="text-center">
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </div>
         </form>
-    </div>
-
 </div>
 {% endblock %}

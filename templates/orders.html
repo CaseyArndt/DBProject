@@ -6,50 +6,60 @@
 
 
 {% block body %}
-<div class="content">
-    <h1 style="text-align: center">Manage Orders</h1>
+<div class="container" style="padding: 10px;">
+    <h1 class="text-center">Add New Order</h1>
+    <form action="/orders" method="POST" class="text-center">
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" name="customer_id" id="customer_id" placeholder="Customer ID">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="total_price" id ="total_price" placeholder="Total Order Price"> 
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="order_date" id ="order_date" placeholder="Order Date">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="order_comments" id ="order_comments" placeholder="Order Comments">
+            </div>
+        </div>
+        <br>
+        <div class="text-center">
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </div>
+    </form>
+</div>
+<br>
+<div class="container">
+    <h1 class="text-center">Manage Orders</h1>
     {% if order_list|length < 1 %}
-    <h4>There are no Orders. Add one below.</h4>
+    <h4>There are no Orders. Add one above.</h4>
     {% else %}
-    <table>
+    <table class="table">
         <thead>
             <tr>
-                <th>Customer ID</th>
-                <th>Total Order Price</th>
-                <th>Order Date</th>
-                <th>Order Comments</th>
-                <th>Actions</th>
+                <th scope="col">Customer ID</th>
+                <th scope="col">Total Order Price</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Order Comments</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for order in order_list %}
             <tr>
-                <td>{{ order.customer_id }}</td>
-                <td>{{ order.total_price }}</td>
-                <td>{{ order.order_date }}</td>
-                <td>{{ order.order_comments }}</td>
-
-                <td>
-                    <a href="/updateorder/{{order.order_id}}">Update</a>
-                    <br>
-                    <a href="/deleteorder/{{order.order_id}}">Delete</a>
+                <td scope="row">{{ order.customer_id }}</td>
+                <td scope="row">{{ order.total_price }}</td>
+                <td scope="row">{{ order.order_date }}</td>
+                <td scope="row">{{ order.order_comments }}</td>
+                <td scope="row">
+                    <a href="/updateorder/{{order.order_id}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deleteorder/{{order.order_id}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% endif %}
-    <br>
-    <h1 style="text-align: center">Add New Order</h1>
-    <div class="form">
-        <form action="/orders" method="POST">
-            <input type="text" name="customer_id" id="customer_id" value="Customer ID">
-            <input type="text" name="total_price" id ="total_price" value ="Total Order Price">
-            <input type="text" name="order_date" id ="order_date" value ="Order Date">
-            <input type="text" name="order_comments" id ="order_comments" value ="Order Comments">
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-
 </div>
 {% endblock %}
