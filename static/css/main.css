@@ -1,0 +1,6 @@
+@media (min-width: 720px){
+    .navbar-nav > li{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
