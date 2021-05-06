@@ -64,6 +64,14 @@ class Category(object):
         self.category_description = category_description
 
 
+class ProductCategory(object):
+    new_id = itertools.count()
+    def __init__(self, product_id: int, category_id: int):
+        self.id = next(self.new_id)
+        self.product_id = product_id
+        self.category_id = category_id
+
+
 
 customer_list = [Customer("Sterling", "Archer", "duchess@isis.gov", "212-220-5240", "2 N. Trenton Street", "New York", "New York", "10016"),
                  Customer("Cyril", "Figgis", "chetmanley@isis.gov", "718-380-1669", "8248 S. Cobblestone St.", "Staten Island", "New York", "10312"),
@@ -83,3 +91,7 @@ product_list = [Product("Arabian Jasmine Seeds", 50, 7.59),
 category_list = [Category("Flower Seeds"),
                  Category("Flower Seedlings"),
                  Category("Potting Soil")]
+
+product_category_list = [ProductCategory(0, 0),
+                        ProductCategory(1, 4),
+                        ProductCategory(2, 8)]

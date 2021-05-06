@@ -361,6 +361,60 @@ def update_category(id):
         return render_template('updatecategory.html', category = category)
 
 
+"""
+PRODUCTSCATEGORIES
+"""
+
+@app.route('/productscategories', methods=['POST', 'GET'])
+def products_categories():
+    if request.method == 'POST':
+        try:
+            product_id = request.form['product_id']
+            category_id = request.form['category_id']
+            print(product_id, category_id)
+            product_category = ProductCategory(product_id, category_id)
+
+            product_category_list.append(product_category)
+        
+            return redirect('/productscategories')
+
+        except:
+            return "There was an issue adding the ProductCategory."
+
+    else:
+        return render_template('productscategories.html', product_category_list = product_category_list)
+
+
+
+@app.route('/deleteproductcategory/<int:id>')
+def delete_product_category(id):
+    try:
+        for product_category in product_category_list:
+            if product_category.id == id:
+                product_category_list.remove(product_category)
+                return redirect('/productscategories')
+    except:
+        return "There was an error deleting this ProductCategory."
+
+
+@app.route('/updateproductcategory/<int:id>', methods=['POST', 'GET'])
+def update_product_category(id):
+    for product_category in product_category_list:
+        if product_category.id == id:
+            break
+
+    if request.method == 'POST':
+        try:
+            product_category.product_id = request.form['product_id']
+            product_category.category_id = request.form['category_id']
+            return redirect('/productscategories')
+
+        except:
+            return "There was an error updating this ProductCategory."
+
+    else:
+        return render_template('updateproductcategory.html', product_category = product_category)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
