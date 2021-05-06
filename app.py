@@ -261,10 +261,13 @@ def products():
             product_inventory = request.form['product_inventory']
             product_price = request.form['product_price']
             product_description = request.form['product_description']
+            category_id = request.form['category_id']
 
             product = Product(product_name, product_inventory, product_price, product_description)
-
             product_list.append(product)
+
+            product_category = ProductCategory(product.product_id, category_id)
+            product_category_list.append(product_category)
         
             return redirect('/products')
 
