@@ -284,21 +284,16 @@ def products():
             product_description = request.form['product_description']
             category_id = request.form['category_id']
 
-            product = Product(product_name, product_inventory, product_price, product_description)
-            product_list.append(product)
-
-            product_category = ProductCategory(product.product_id, category_id)
-            product_category_list.append(product_category)
-
             query = "INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `productDescription`) VALUES (%s, %s, %s, %s)"
             data = (product_name, product_inventory, product_price, product_description)
-            execute_query(db_connection, query, data)
+            cursor = execute_query(db_connection, query, data)
 
-            """
+            # Add Product to ProductsCategories if Category is specified
             if category_id:
+                product_id = cursor.lastrowid
                 query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
                 data = (product_id, category_id)
-            """
+                execute_query(db_connection, query, data)
         
             return redirect('/products')
 
@@ -356,9 +351,9 @@ def categories():
             category_name = request.form['category_name']
             category_description = request.form['category_description']
 
-            category = Category(category_name, category_description)
-
-            category_list.append(category)
+            query = "INSERT INTO `Categories` (`categoryName`, `categoryDesription`) VALUES (%s, %s)"
+            data = (category_name, category_description)
+            execute_query(db_connection, query, data)
         
             return redirect('/categories')
 
@@ -413,10 +408,10 @@ def products_categories():
         try:
             product_id = request.form['product_id']
             category_id = request.form['category_id']
-            print(product_id, category_id)
-            product_category = ProductCategory(product_id, category_id)
-
-            product_category_list.append(product_category)
+            
+            query = "INSERT INTO `ProductsCategories` (`product_id`, `category_id`) VALUES (%s, %s)"
+            data = (product_id, category_id)
+            execute_query(db_connection, query, data)
         
             return redirect('/productscategories')
 
@@ -426,7 +421,7 @@ def products_categories():
     else:
         query = "SELECT * FROM `ProductsCategories`;"
         result = execute_query(db_connection, query).fetchall()
-        return render_template('productscategories.html', product_categories = result)
+        return render_template('productscategories.html', products_categories = result)
 
 
 

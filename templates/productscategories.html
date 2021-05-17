@@ -26,8 +26,8 @@
 <br>
 <div class="container">
     <h1 class="text-center">Manage ProductsCategories</h1>
-    {% if product_category_list|length < 1 %}
-    <h4>There are no ProductsCategories. Add one above.</h4>
+    {% if products_categories|length < 1 %}
+    <h4 class="text-center">There are no ProductsCategories. Add one above.</h4>
     {% else %}
     <table class="table">
         <thead>
@@ -38,13 +38,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for product_category in product_category_list %}
+            {% for product_category in products_categories %}
             <tr>
-                <td scope="row">{{ product_category.product_id }}</td>
-                <td scope="row">{{ product_category.category_id }}</td>
+                <td scope="row">{{ product_category[1] }}</td>
+                <td scope="row">{{ product_category[2] }}</td>
                 <td scope="row">
-                    <a href="/updateproductcategory/{{product_category.id}}"><button type="button" class="btn btn-primary">Update</button></a>
-                    <a href="/deleteproductcategory/{{product_category.id}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    <a href="/updateproductcategory/{{product_category[0]}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deleteproductcategory/{{product_category[0]}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}
