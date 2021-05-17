@@ -209,15 +209,17 @@ SHIPMENTS
 
 @app.route('/shipments', methods=['POST', 'GET'])
 def shipments():
+    db_connection = connect_to_database
     if request.method == 'POST':
         try:
             order_id = request.form['order_id']
             tracking_number = request.form['tracking_number']
             date_shipped = request.form['date_shipped']
+            date_delivered = request.form['date_delivered']
 
-            shipment = Shipment(order_id, tracking_number, date_shipped) 
-
-            shipment_list.append(shipment)
+            query = "INSERT INTO `Shipments` (`orderID`, `trackingNumber`, `dateShipped`, `dateDelivered`) VALUES (%s, %s, %s, %s)"
+            data = (order_id, tracking_number, date_shipped, date_delivered)
+            execute_query(db_connection, query, data)
         
             return redirect('/shipments')
 
@@ -225,7 +227,9 @@ def shipments():
             return "There was an issue adding the Shipment."
 
     else:
-        return render_template('shipments.html', shipment_list = shipment_list)
+        query = "SELECT * FROM `Shipments`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('shipments.html', shipments = result)
 
 
 @app.route('/deleteshipment/<int:id>')
