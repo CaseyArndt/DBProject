@@ -406,10 +406,10 @@ def products_categories():
 
     if request.method == 'POST':
         try:
-            product_id = int(request.form['product'])
-            category_id = int(request.form['category'])
+            product_id = request.form['product']
+            category_id = request.form['category']
             
-            query = "INSERT INTO `ProductsCategories` (`product_id`, `category_id`) VALUES (%d, %d)"
+            query = "INSERT INTO `ProductsCategories` (`product_id`, `category_id`) VALUES (%s, %s)"
             data = (product_id, category_id)
             execute_query(db_connection, query, data)
         
@@ -421,6 +421,7 @@ def products_categories():
     else:
         query = "SELECT * FROM `ProductsCategories`;"
         result = execute_query(db_connection, query).fetchall()
+
         # queries and results for adding new productcategory by name in drop down list
         products_query = "SELECT * FROM `Products`;"
         products_result = execute_query(db_connection, products_query)
