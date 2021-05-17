@@ -50,9 +50,8 @@ def delete_customer(id):
     db_connection = connect_to_database()
 
     try:
-        query = "DELETE FROM `Customers` WHERE `customerID` = %s;"
-        data = (id)
-        execute_query(db_connection, query, data)
+        query = f"DELETE FROM `Customers` WHERE `customerID` = {id};"
+        execute_query(db_connection, query)
         return redirect('/customers')
     except:
         return "There was an error deleting this Customer."
@@ -115,11 +114,12 @@ def orders():
 
 @app.route('/deleteorder/<int:id>')
 def delete_order(id):
+    db_connection = connect_to_database()
+
     try:
-        for order in order_list:
-            if order.order_id == id:
-                order_list.remove(order)
-                return redirect('/orders')
+        query = f"DELETE FROM `Orders` WHERE `orderID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/orders')
     except:
         return "There was an error deleting this Order."
 
@@ -178,11 +178,12 @@ def order_items():
 
 @app.route('/deleteorderitem/<int:id>')
 def delete_order_item(id):
+    db_connection = connect_to_database()
+
     try:
-        for order_item in order_item_list:
-            if order_item.item_id == id:
-                order_item_list.remove(order_item)
-                return redirect('/orderitems')
+        query = f"DELETE FROM `OrderItems` WHERE `orderItemID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/orderitems')
     except:
         return "There was an error deleting this Order Item."
 
@@ -240,11 +241,13 @@ def shipments():
 
 @app.route('/deleteshipment/<int:id>')
 def delete_shipment(id):
+    db_connection = connect_to_database()
+
     try:
-        for shipment in shipment_list:
-            if shipment.shipment_id == id:
-                shipment_list.remove(shipment)
-                return redirect('/shipments')
+        query = f"DELETE FROM `Orders` WHERE `shipmentID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/shipments')
+
     except:
         return "There was an error deleting this Shipment."
 
@@ -310,11 +313,12 @@ def products():
 
 @app.route('/deleteproduct/<int:id>')
 def delete_product(id):
+    db_connection = connect_to_database()
+
     try:
-        for product in product_list:
-            if product.product_id == id:
-                product_list.remove(product)
-                return redirect('/products')
+        query = f"DELETE FROM `Orders` WHERE `productID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/products')
     except:
         return "There was an error deleting this Product."
 
@@ -370,11 +374,12 @@ def categories():
 
 @app.route('/deletecategory/<int:id>')
 def delete_category(id):
+    db_connection = connect_to_database()
+
     try:
-        for category in category_list:
-            if category.category_id == id:
-                category_list.remove(category)
-                return redirect('/categories')
+        query = f"DELETE FROM `Orders` WHERE `categoryID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/categories')
     except:
         return "There was an error deleting this Category."
 
