@@ -244,7 +244,7 @@ def delete_shipment(id):
     db_connection = connect_to_database()
 
     try:
-        query = f"DELETE FROM `Orders` WHERE `shipmentID` = {id};"
+        query = f"DELETE FROM `Shipments` WHERE `shipmentID` = {id};"
         execute_query(db_connection, query)
         return redirect('/shipments')
 
@@ -316,7 +316,7 @@ def delete_product(id):
     db_connection = connect_to_database()
 
     try:
-        query = f"DELETE FROM `Orders` WHERE `productID` = {id};"
+        query = f"DELETE FROM `Products` WHERE `productID` = {id};"
         execute_query(db_connection, query)
         return redirect('/products')
     except:
@@ -377,7 +377,7 @@ def delete_category(id):
     db_connection = connect_to_database()
 
     try:
-        query = f"DELETE FROM `Orders` WHERE `categoryID` = {id};"
+        query = f"DELETE FROM `Categories` WHERE `categoryID` = {id};"
         execute_query(db_connection, query)
         return redirect('/categories')
     except:
