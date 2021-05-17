@@ -16,7 +16,7 @@ CUSTOMERS
 """
 
 @app.route('/customers', methods=['POST', 'GET'])
-def customers():
+def customers()
     if request.method == 'POST':
         try:
             first_name = request.form['first_name']
@@ -28,17 +28,19 @@ def customers():
             state = request.form['state']
             zip_code = request.form['zip_code']
 
-            customer = Customer(first_name, last_name, email, phone_number, street_address, city, state, zip_code) 
+            query = "INSERT INTO `Customers` (`firstName`, `lastName`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            data = (first_name, last_name, email, phone_number, street_address, city, state, zip_code)
+            execute_query(db_connection, query, data)
 
-            customer_list.append(customer)
-        
             return redirect('/customers')
 
         except:
             return "There was an issue adding the Customer."
 
     else:
-        return render_template('customers.html', customer_list = customer_list)
+        query = "SELECT * FROM `Customers`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('customers.html', customers = result)
 
 
 @app.route('/deletecustomer/<int:id>')
