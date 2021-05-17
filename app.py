@@ -94,7 +94,7 @@ def orders():
 
     if request.method == 'POST':
         try:
-            customer_id = request.form['customer_id']
+            customer_id = request.form['customer']
             total_price = request.form['total_price']
             order_date = request.form['order_date']
             order_comments = request.form['order_comments']
