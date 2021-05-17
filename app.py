@@ -351,7 +351,7 @@ def categories():
             category_name = request.form['category_name']
             category_description = request.form['category_description']
 
-            query = "INSERT INTO `Categories` (`categoryName`, `categoryDesription`) VALUES (%s, %s)"
+            query = "INSERT INTO `Categories` (`categoryName`, `categoryDescription`) VALUES (%s, %s)"
             data = (category_name, category_description)
             execute_query(db_connection, query, data)
         
@@ -409,7 +409,7 @@ def products_categories():
             product_id = request.form['product']
             category_id = request.form['category']
             
-            query = "INSERT INTO `ProductsCategories` (`product_id`, `category_id`) VALUES (%s, %s)"
+            query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
             data = (product_id, category_id)
             execute_query(db_connection, query, data)
         
