@@ -86,6 +86,7 @@ ORDERS
 
 @app.route('/orders', methods=['POST', 'GET'])
 def orders():
+    db_connection = connect_to_database()
     if request.method == 'POST':
         try:
             customer_id = request.form['customer_id']
@@ -93,9 +94,9 @@ def orders():
             order_date = request.form['order_date']
             order_comments = request.form['order_comments']
 
-            order = Order(customer_id, total_price, order_date, order_comments) 
-
-            order_list.append(order)
+            query = "INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) VALUES (%s, %s, %s, %s)"
+            data = (customer_id, total_price, order_date, order_comments)
+            execute_query(db_connection, query, data)
         
             return redirect('/orders')
 
@@ -103,7 +104,9 @@ def orders():
             return "There was an issue adding the Order."
 
     else:
-        return render_template('orders.html', order_list = order_list)
+        query = "SELECT * FROM `Orders`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('orders.html', orders = result)
 
 
 @app.route('/deleteorder/<int:id>')
