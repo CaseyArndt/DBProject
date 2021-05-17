@@ -422,9 +422,9 @@ def products_categories():
         query = "SELECT * FROM `ProductsCategories`;"
         result = execute_query(db_connection, query).fetchall()
         # queries and results for adding new productcategory by name in drop down list
-        products_query = "SELECT `product_id`, `productName` FROM `Products`;"
+        products_query = "SELECT * FROM `Products`;"
         products_result = execute_query(db_connection, products_query)
-        categories_query = "SELECT `category_id`, `categoryName` FROM `Categories`;"
+        categories_query = "SELECT * FROM `Categories`;"
         categories_result = execute_query(db_connection, categories_query)
 
         return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
