@@ -9,12 +9,30 @@
 <div class="container">
     <h1 class="text-center" style="padding: 10px;">Add New ProductCategory</h1>
     <form action="/productscategories" method="POST" class="text-center">
+        <!--
         <div class="row">
             <div class="col">
                 <input type="text" class="form-control" name="product_id" id="product_id" placeholder="Product ID">
             </div>
             <div class="col">
                 <input type="text" class="form-control" name="category_id" id ="category_id" placeholder="Category ID">
+            </div>
+        </div>
+        -->
+        <div class="row">
+            <div class="col">
+                <label for="product">Product</label>
+                <select name="product" id ="product">
+                    {% for product in products %}
+                    <option value="{{product[0]}}">{{product[1]}}</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="category">Category</label>
+                <select name="category" id ="category">
+                    {% for category in categories %}
+                    <option value="{{category[0]}}">{{category[1]}}</option>
+                </select>
             </div>
         </div>
         <br>
