@@ -16,7 +16,7 @@ CUSTOMERS
 """
 
 @app.route('/customers', methods=['POST', 'GET'])
-def customers()
+def customers():
     if request.method == 'POST':
         try:
             first_name = request.form['first_name']
