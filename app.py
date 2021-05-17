@@ -151,13 +151,13 @@ def order_items():
     db_connection = connect_to_database()
     if request.method == 'POST':
         try:
-            order_id = request.form['order_id']
-            product_id = request.form['product_id']
-            order_item_quantity= request.form['order_item_quantity']
-            order_item_price = request.form['order_item_price']
+            product_id = int(request.form['product_id'])
+            order_id = int(request.form['order_id'])
+            order_item_quantity= int(request.form['order_item_quantity'])
+            order_item_price = float(request.form['order_item_price'])
 
-            query = "INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderItemPrice` VALUES (%s, %s, %s, %s)"
-            data = (order_id, product_id, order_item_quantity, order_item_price)
+            query = "INSERT INTO `OrderItems` (`productID`, `orderID`, `orderItemQuantity`, `orderItemPrice` VALUES (%s, %s, %s, %s)"
+            data = (product_id, order_id, order_item_quantity, order_item_price)
             execute_query(db_connection, query, data)
         
             return redirect('/orderitems')
