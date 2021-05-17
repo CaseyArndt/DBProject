@@ -406,8 +406,8 @@ def products_categories():
 
     if request.method == 'POST':
         try:
-            product_id = request.form['product']
-            category_id = request.form['category']
+            product_id = int(request.form['product'])
+            category_id = int(request.form['category'])
 
             print(product_id, category_id)
             
