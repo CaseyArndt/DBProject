@@ -12,15 +12,6 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/attribute/<table>')
-def attribute(table):
-    db_connection = connect_to_database()
-
-    query = f"SHOW `columns` FROM `{table}`;"    
-    result = execute_query(db_connection, query)
-    
-    return result
-
 
 """
 CUSTOMERS
