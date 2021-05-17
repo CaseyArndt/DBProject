@@ -408,6 +408,8 @@ def products_categories():
         try:
             product_id = request.form['product_id']
             category_id = request.form['category_id']
+
+            print(product_id, category_id)
             
             query = "INSERT INTO `ProductsCategories` (`product_id`, `category_id`) VALUES (%s, %s)"
             data = (product_id, category_id)
