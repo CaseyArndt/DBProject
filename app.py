@@ -50,7 +50,7 @@ def delete_customer(id):
     db_connection = connect_to_database()
 
     try:
-        query = "DELETE FROM `Customers` WHERE `customerID` = %s"
+        query = "DELETE FROM `Customers` WHERE `customerID` = %s;"
         data = (id)
         execute_query(db_connection, query, data)
         return redirect('/customers')
