@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from db import *
-from .. db_credentials import host, user, passwd, db
+from db_credentials import host, user, passwd, db
 from db_connector import connect_to_database, execute_query
 
 DEBUG = False
