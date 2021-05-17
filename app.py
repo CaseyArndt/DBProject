@@ -148,16 +148,17 @@ ORDER ITEMS
 
 @app.route('/orderitems', methods=['POST', 'GET'])
 def order_items():
+    db_connection = connect_to_database()
     if request.method == 'POST':
         try:
             order_id = request.form['order_id']
             product_id = request.form['product_id']
-            item_quantity= request.form['item_quantity']
-            item_price = request.form['item_price']
+            order_item_quantity= request.form['order_item_quantity']
+            order_item_price = request.form['order_item_price']
 
-            order_item = OrderItem(order_id, product_id, item_quantity, item_price) 
-
-            order_item_list.append(order_item)
+            query = "INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderItemPrice` VALUES (%s, %s, %s, %s)"
+            data = (order_id, product_id, order_item_quantity, order_item_price)
+            execute_query(db_connection, query, data)
         
             return redirect('/orderitems')
 
@@ -165,7 +166,9 @@ def order_items():
             return "There was an issue adding the Order Item."
 
     else:
-        return render_template('orderitems.html', order_item_list = order_item_list)
+        query = "SELECT * FROM `OrderItems`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('orderitems.html', order_items = result)
 
 
 @app.route('/deleteorderitem/<int:id>')
