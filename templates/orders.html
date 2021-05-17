@@ -14,6 +14,14 @@
                 <input type="text" class="form-control" name="customer_id" id="customer_id" placeholder="Customer ID">
             </div>
             <div class="col">
+                <select class="form-select" name="customer" id ="customer">
+                    <option selected>Choose Customer</option>
+                    {% for customer in customers %}
+                    <option value="{{customer[0]}}">{{customer[1]}} {{customer[2]}} {{customer[3]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
                 <input type="text" class="form-control" name="total_price" id ="total_price" placeholder="Total Order Price"> 
             </div>
             <div class="col">

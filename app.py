@@ -111,7 +111,10 @@ def orders():
     else:
         query = "SELECT * FROM `Orders`;"
         result = execute_query(db_connection, query).fetchall()
-        return render_template('orders.html', orders = result)
+
+        customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
+        customers_result = execute_query(db_connection, customers_query).fetchall()
+        return render_template('orders.html', orders = result, customers = customers_result)
 
 
 @app.route('/deleteorder/<int:id>')
