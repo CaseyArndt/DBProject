@@ -209,7 +209,7 @@ SHIPMENTS
 
 @app.route('/shipments', methods=['POST', 'GET'])
 def shipments():
-    db_connection = connect_to_database
+    db_connection = connect_to_database()
     if request.method == 'POST':
         try:
             order_id = request.form['order_id']
