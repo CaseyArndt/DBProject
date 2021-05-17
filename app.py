@@ -16,7 +16,7 @@ def index():
 def attribute(table):
     db_connection = connect_to_database()
 
-    query = f"SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = `{db}` AND `TABLE_NAME` = `{table}`;"    
+    query = f"SHOW `columns` FROM `{table}`;"    
     result = execute_query(db_connection, query)
     
     return result
