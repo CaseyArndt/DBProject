@@ -143,7 +143,7 @@ CREATE TABLE `Products` (
 -- Dumping data for table `Products`
 --
 
-INSERT INTO `Products` (`productName`, `productInventory`, `productDescription`, `productPrice`) VALUES
+INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `productDescription`) VALUES
 ('Arabian Jasmine Seeds', 50, '7.59', NULL),
 ('3 Gallon Clay Pots (Set of 5)', 99, '27.34', NULL),
 ('Organic Fertilizer', 0, '21.79', 'Feed your plants with our special fertilizer blend rich in nutrients.', NULL);
