@@ -47,11 +47,13 @@ def customers():
 
 @app.route('/deletecustomer/<int:id>')
 def delete_customer(id):
+    db_connection = connect_to_database()
+
     try:
-        for customer in customer_list:
-            if customer.customer_id == id:
-                customer_list.remove(customer)
-                return redirect('/customers')
+        query = "DELETE FROM `Customers` WHERE `customerID` = %s"
+        data = (id)
+        execute_query(db_connection, query, data)
+        return redirect('/customers')
     except:
         return "There was an error deleting this Customer."
 
