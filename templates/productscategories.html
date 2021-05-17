@@ -25,6 +25,7 @@
                 <select name="product" id ="product">
                     {% for product in products %}
                     <option value="{{product[0]}}">{{product[1]}}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col">
@@ -32,6 +33,7 @@
                 <select name="category" id ="category">
                     {% for category in categories %}
                     <option value="{{category[0]}}">{{category[1]}}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>
