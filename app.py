@@ -18,6 +18,7 @@ CUSTOMERS
 @app.route('/customers', methods=['POST', 'GET'])
 def customers():
     db_connection = connect_to_database()
+    
     if request.method == 'POST':
         try:
             first_name = request.form['first_name']
@@ -87,6 +88,7 @@ ORDERS
 @app.route('/orders', methods=['POST', 'GET'])
 def orders():
     db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             customer_id = request.form['customer_id']
@@ -149,15 +151,16 @@ ORDER ITEMS
 @app.route('/orderitems', methods=['POST', 'GET'])
 def order_items():
     db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
-            product_id = request.form['product_id']
             order_id = request.form['order_id']
+            product_id = request.form['product_id']
             order_item_quantity = request.form['order_item_quantity']
             order_item_price = request.form['order_item_price']
 
-            query = "INSERT INTO `OrderItems` (`productID`, `orderID`, `orderItemQuantity`, `orderItemPrice`) VALUES (%s, %s, %s, %s)"
-            data = (product_id, order_id, order_item_quantity, order_item_price)
+            query = "INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderItemPrice`) VALUES (%s, %s, %s, %s)"
+            data = (order_id, product_id, order_item_quantity, order_item_price)
             execute_query(db_connection, query, data)
         
             return redirect('/orderitems')
@@ -210,6 +213,7 @@ SHIPMENTS
 @app.route('/shipments', methods=['POST', 'GET'])
 def shipments():
     db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             order_id = request.form['order_id']
@@ -270,6 +274,8 @@ PRODUCTS
 
 @app.route('/products', methods=['POST', 'GET'])
 def products():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             product_name = request.form['product_name']
@@ -283,6 +289,16 @@ def products():
 
             product_category = ProductCategory(product.product_id, category_id)
             product_category_list.append(product_category)
+
+            query = "INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `productDescription`) VALUES (%s, %s, %s, %s)"
+            data = (product_name, product_inventory, product_price, product_description)
+            execute_query(db_connection, query, data)
+
+            """
+            if category_id:
+                query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
+                data = (product_id, category_id)
+            """
         
             return redirect('/products')
 
@@ -290,7 +306,9 @@ def products():
             return "There was an issue adding the Product."
 
     else:
-        return render_template('products.html', product_list = product_list)
+        query = "SELECT * FROM `Products`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('products.html', products = result)
 
 
 @app.route('/deleteproduct/<int:id>')
@@ -331,6 +349,8 @@ CATEGORIES
 
 @app.route('/categories', methods=['POST', 'GET'])
 def categories():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             category_name = request.form['category_name']
@@ -346,7 +366,9 @@ def categories():
             return "There was an issue adding the Category."
 
     else:
-        return render_template('categories.html', category_list = category_list)
+        query = "SELECT * FROM `Categories`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('categories.html', categories = result)
 
 
 @app.route('/deletecategory/<int:id>')
@@ -385,6 +407,8 @@ PRODUCTSCATEGORIES
 
 @app.route('/productscategories', methods=['POST', 'GET'])
 def products_categories():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             product_id = request.form['product_id']
@@ -400,7 +424,9 @@ def products_categories():
             return "There was an issue adding the ProductCategory."
 
     else:
-        return render_template('productscategories.html', product_category_list = product_category_list)
+        query = "SELECT * FROM `ProductsCategories`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('productscategories.html', product_categories = result)
 
 
 
