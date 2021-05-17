@@ -11,6 +11,17 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+
+@app.route('/attribute/<table>')
+def attribute(table):
+    db_connection = connect_to_database()
+
+    query = f"SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = `{db}` AND `TABLE_NAME` = `{table}`;"    
+    result = execute_query(db_connection, query)
+    
+    return result
+
+
 """
 CUSTOMERS
 """
