@@ -17,6 +17,7 @@ CUSTOMERS
 
 @app.route('/customers', methods=['POST', 'GET'])
 def customers():
+    db_connection = connect_to_database()
     if request.method == 'POST':
         try:
             first_name = request.form['first_name']
