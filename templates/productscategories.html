@@ -21,16 +21,16 @@
         -->
         <div class="row">
             <div class="col">
-                <label for="product">Product</label>
-                <select name="product" id ="product">
+                <select class="form-select" name="product" id ="product">
+                    <option selected>Choose Product</option>
                     {% for product in products %}
                     <option value="{{product[0]}}">{{product[1]}}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col">
-                <label for="category">Category</label>
-                <select name="category" id ="category">
+                <select class="form-select" name="category" id ="category">
+                    <option selected>Choose Category</option>
                     {% for category in categories %}
                     <option value="{{category[0]}}">{{category[1]}}</option>
                     {% endfor %}
