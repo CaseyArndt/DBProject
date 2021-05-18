@@ -11,16 +11,26 @@
     <form action="/orderitems" method="POST" class="text-center">
         <div class="row">
             <div class="col">
-                <input type="text" class="form-control" name="order_id" id="order_id" placeholder="Order ID">
+                <select class="form-select" name="order" id ="order">
+                    <option selected>Choose Order</option>
+                    {% for order in orders %}
+                    <option value="{{order[0]}}">{{order[0]}}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col">
-                <input type="text" class="form-control" name="product_id" id ="product_id" placeholder="Product ID">
+                <select class="form-select" name="product" id ="product">
+                    <option selected>Choose Product</option>
+                    {% for product in products %}
+                    <option value="{{product[0]}}">{{product[1]}}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col">
-                <input type="text" class="form-control" name="item_quantity" id ="item_quantity" placeholder="Item Quantity">
+                <input type="text" class="form-control" name="order_item_quantity" id ="order_item_quantity" placeholder="Order Item Quantity">
             </div>
             <div class="col">
-                <input type="text" class="form-control" name="item_price" id ="item_price" placeholder="Item Price">
+                <input type="text" class="form-control" name="order_item_price" id ="order_item_price" placeholder="Order Item Price">
             </div>
         </div>
         <br>
@@ -32,8 +42,8 @@
 <br>
 <div class="container">
     <h1 class="text-center">Manage Order Items</h1>
-    {% if order_item_list|length < 1 %}
-    <h4>There are no Order Items. Add one above.</h4>
+    {% if order_items|length < 1 %}
+    <h4 class="text-center">There are no Order Items. Add one above.</h4>
     {% else %}
     <table class="table">
         <thead>
@@ -46,15 +56,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for order_item in order_item_list %}
+            {% for order_item in order_items %}
             <tr>
-                <td scope="row">{{ order_item.order_id }}</td>
-                <td scope="row">{{ order_item.product_id }}</td>
-                <td scope="row">{{ order_item.item_quantity }}</td>
-                <td scope="row">{{ order_item.item_price }}</td>
+                <td scope="row">{{ order_item[1] }}</td>
+                <td scope="row">{{ order_item[2] }}</td>
+                <td scope="row">{{ order_item[3] }}</td>
+                <td scope="row">{{ order_item[4] }}</td>
                 <td scope="row">
-                    <a href="/updateorderitem/{{order_item.item_id}}"><button type="button" class="btn btn-primary">Update</button></a>
-                    <a href="/deleteorderitem/{{order_item.item_id}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    <a href="/updateorderitem/{{order_item[0]}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deleteorderitem/{{order_item[0]}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}

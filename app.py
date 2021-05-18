@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from db import *
+from db_credentials import host, user, passwd, db
+from db_connector import connect_to_database, execute_query
 
 DEBUG = False
 
@@ -9,12 +11,16 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+
+
 """
 CUSTOMERS
 """
 
 @app.route('/customers', methods=['POST', 'GET'])
 def customers():
+    db_connection = connect_to_database()
+    
     if request.method == 'POST':
         try:
             first_name = request.form['first_name']
@@ -26,26 +32,29 @@ def customers():
             state = request.form['state']
             zip_code = request.form['zip_code']
 
-            customer = Customer(first_name, last_name, email, phone_number, street_address, city, state, zip_code) 
+            query = "INSERT INTO `Customers` (`firstName`, `lastName`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            data = (first_name, last_name, email, phone_number, street_address, city, state, zip_code)
+            execute_query(db_connection, query, data)
 
-            customer_list.append(customer)
-        
             return redirect('/customers')
 
         except:
             return "There was an issue adding the Customer."
 
     else:
-        return render_template('customers.html', customer_list = customer_list)
+        query = "SELECT * FROM `Customers`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('customers.html', customers = result)
 
 
 @app.route('/deletecustomer/<int:id>')
 def delete_customer(id):
+    db_connection = connect_to_database()
+
     try:
-        for customer in customer_list:
-            if customer.customer_id == id:
-                customer_list.remove(customer)
-                return redirect('/customers')
+        query = f"DELETE FROM `Customers` WHERE `customerID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/customers')
     except:
         return "There was an error deleting this Customer."
 
@@ -81,16 +90,18 @@ ORDERS
 
 @app.route('/orders', methods=['POST', 'GET'])
 def orders():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
-            customer_id = request.form['customer_id']
+            customer_id = request.form['customer']
             total_price = request.form['total_price']
             order_date = request.form['order_date']
             order_comments = request.form['order_comments']
 
-            order = Order(customer_id, total_price, order_date, order_comments) 
-
-            order_list.append(order)
+            query = "INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) VALUES (%s, %s, %s, %s)"
+            data = (customer_id, total_price, order_date, order_comments)
+            execute_query(db_connection, query, data)
         
             return redirect('/orders')
 
@@ -98,16 +109,22 @@ def orders():
             return "There was an issue adding the Order."
 
     else:
-        return render_template('orders.html', order_list = order_list)
+        query = "SELECT * FROM `Orders`;"
+        result = execute_query(db_connection, query).fetchall()
+
+        customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
+        customers_result = execute_query(db_connection, customers_query).fetchall()
+        return render_template('orders.html', orders = result, customers = customers_result)
 
 
 @app.route('/deleteorder/<int:id>')
 def delete_order(id):
+    db_connection = connect_to_database()
+
     try:
-        for order in order_list:
-            if order.order_id == id:
-                order_list.remove(order)
-                return redirect('/orders')
+        query = f"DELETE FROM `Orders` WHERE `orderID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/orders')
     except:
         return "There was an error deleting this Order."
 
@@ -140,16 +157,18 @@ ORDER ITEMS
 
 @app.route('/orderitems', methods=['POST', 'GET'])
 def order_items():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
-            order_id = request.form['order_id']
-            product_id = request.form['product_id']
-            item_quantity= request.form['item_quantity']
-            item_price = request.form['item_price']
+            order_id = request.form['order']
+            product_id = request.form['product']
+            order_item_quantity = request.form['order_item_quantity']
+            order_item_price = request.form['order_item_price']
 
-            order_item = OrderItem(order_id, product_id, item_quantity, item_price) 
-
-            order_item_list.append(order_item)
+            query = "INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderItemPrice`) VALUES (%s, %s, %s, %s)"
+            data = (order_id, product_id, order_item_quantity, order_item_price)
+            execute_query(db_connection, query, data)
         
             return redirect('/orderitems')
 
@@ -157,16 +176,27 @@ def order_items():
             return "There was an issue adding the Order Item."
 
     else:
-        return render_template('orderitems.html', order_item_list = order_item_list)
+        query = "SELECT * FROM `OrderItems`;"
+        result = execute_query(db_connection, query).fetchall()
+
+        # queries for Products, Orders, and Customers when adding new OrderItem
+        products_query = "SELECT `productID`, `productName` FROM `Products`;"
+        products_result = execute_query(db_connection, products_query).fetchall()
+
+        orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+        orders_result = execute_query(db_connection, orders_query).fetchall()
+
+        return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
 
 
 @app.route('/deleteorderitem/<int:id>')
 def delete_order_item(id):
+    db_connection = connect_to_database()
+
     try:
-        for order_item in order_item_list:
-            if order_item.item_id == id:
-                order_item_list.remove(order_item)
-                return redirect('/orderitems')
+        query = f"DELETE FROM `OrderItems` WHERE `orderItemID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/orderitems')
     except:
         return "There was an error deleting this Order Item."
 
@@ -198,15 +228,18 @@ SHIPMENTS
 
 @app.route('/shipments', methods=['POST', 'GET'])
 def shipments():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             order_id = request.form['order_id']
             tracking_number = request.form['tracking_number']
             date_shipped = request.form['date_shipped']
+            date_delivered = request.form['date_delivered']
 
-            shipment = Shipment(order_id, tracking_number, date_shipped) 
-
-            shipment_list.append(shipment)
+            query = "INSERT INTO `Shipments` (`orderID`, `trackingNumber`, `dateShipped`, `dateDelivered`) VALUES (%s, %s, %s, %s)"
+            data = (order_id, tracking_number, date_shipped, date_delivered)
+            execute_query(db_connection, query, data)
         
             return redirect('/shipments')
 
@@ -214,16 +247,20 @@ def shipments():
             return "There was an issue adding the Shipment."
 
     else:
-        return render_template('shipments.html', shipment_list = shipment_list)
+        query = "SELECT * FROM `Shipments`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('shipments.html', shipments = result)
 
 
 @app.route('/deleteshipment/<int:id>')
 def delete_shipment(id):
+    db_connection = connect_to_database()
+
     try:
-        for shipment in shipment_list:
-            if shipment.shipment_id == id:
-                shipment_list.remove(shipment)
-                return redirect('/shipments')
+        query = f"DELETE FROM `Shipments` WHERE `shipmentID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/shipments')
+
     except:
         return "There was an error deleting this Shipment."
 
@@ -255,6 +292,8 @@ PRODUCTS
 
 @app.route('/products', methods=['POST', 'GET'])
 def products():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             product_name = request.form['product_name']
@@ -263,11 +302,16 @@ def products():
             product_description = request.form['product_description']
             category_id = request.form['category_id']
 
-            product = Product(product_name, product_inventory, product_price, product_description)
-            product_list.append(product)
+            query = "INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `productDescription`) VALUES (%s, %s, %s, %s)"
+            data = (product_name, product_inventory, product_price, product_description)
+            cursor = execute_query(db_connection, query, data)
 
-            product_category = ProductCategory(product.product_id, category_id)
-            product_category_list.append(product_category)
+            # Add Product to ProductsCategories if Category is specified
+            if category_id:
+                product_id = cursor.lastrowid
+                query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
+                data = (product_id, category_id)
+                execute_query(db_connection, query, data)
         
             return redirect('/products')
 
@@ -275,16 +319,19 @@ def products():
             return "There was an issue adding the Product."
 
     else:
-        return render_template('products.html', product_list = product_list)
+        query = "SELECT * FROM `Products`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('products.html', products = result)
 
 
 @app.route('/deleteproduct/<int:id>')
 def delete_product(id):
+    db_connection = connect_to_database()
+
     try:
-        for product in product_list:
-            if product.product_id == id:
-                product_list.remove(product)
-                return redirect('/products')
+        query = f"DELETE FROM `Products` WHERE `productID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/products')
     except:
         return "There was an error deleting this Product."
 
@@ -316,14 +363,16 @@ CATEGORIES
 
 @app.route('/categories', methods=['POST', 'GET'])
 def categories():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
             category_name = request.form['category_name']
             category_description = request.form['category_description']
 
-            category = Category(category_name, category_description)
-
-            category_list.append(category)
+            query = "INSERT INTO `Categories` (`categoryName`, `categoryDescription`) VALUES (%s, %s)"
+            data = (category_name, category_description)
+            execute_query(db_connection, query, data)
         
             return redirect('/categories')
 
@@ -331,16 +380,19 @@ def categories():
             return "There was an issue adding the Category."
 
     else:
-        return render_template('categories.html', category_list = category_list)
+        query = "SELECT * FROM `Categories`;"
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('categories.html', categories = result)
 
 
 @app.route('/deletecategory/<int:id>')
 def delete_category(id):
+    db_connection = connect_to_database()
+
     try:
-        for category in category_list:
-            if category.category_id == id:
-                category_list.remove(category)
-                return redirect('/categories')
+        query = f"DELETE FROM `Categories` WHERE `categoryID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/categories')
     except:
         return "There was an error deleting this Category."
 
@@ -370,14 +422,16 @@ PRODUCTSCATEGORIES
 
 @app.route('/productscategories', methods=['POST', 'GET'])
 def products_categories():
+    db_connection = connect_to_database()
+
     if request.method == 'POST':
         try:
-            product_id = request.form['product_id']
-            category_id = request.form['category_id']
-            print(product_id, category_id)
-            product_category = ProductCategory(product_id, category_id)
-
-            product_category_list.append(product_category)
+            product_id = request.form['product']
+            category_id = request.form['category']
+            
+            query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
+            data = (product_id, category_id)
+            execute_query(db_connection, query, data)
         
             return redirect('/productscategories')
 
@@ -385,7 +439,16 @@ def products_categories():
             return "There was an issue adding the ProductCategory."
 
     else:
-        return render_template('productscategories.html', product_category_list = product_category_list)
+        query = "SELECT * FROM `ProductsCategories`;"
+        result = execute_query(db_connection, query).fetchall()
+
+        # queries and results for adding new productcategory by name in drop down list
+        products_query = "SELECT * FROM `Products`;"
+        products_result = execute_query(db_connection, products_query)
+        categories_query = "SELECT * FROM `Categories`;"
+        categories_result = execute_query(db_connection, categories_query)
+
+        return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
 
 
 
