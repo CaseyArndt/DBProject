@@ -14,7 +14,12 @@
                 <input type="text" class="form-control" name="order_id" id="order_id" placeholder="Order ID">
             </div>
             <div class="col">
-                <input type="text" class="form-control" name="product_id" id ="product_id" placeholder="Product ID">
+                <select class="form-select" name="product" id ="product">
+                    <option selected>Choose Product</option>
+                    {% for product in products %}
+                    <option value="{{product[0]}}">{{product[1]}}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col">
                 <input type="text" class="form-control" name="order_item_quantity" id ="order_item_quantity" placeholder="Order Item Quantity">

@@ -161,8 +161,8 @@ def order_items():
 
     if request.method == 'POST':
         try:
-            order_id = request.form['order_id']
-            product_id = request.form['product_id']
+            order_id = request.form['order']
+            product_id = request.form['product']
             order_item_quantity = request.form['order_item_quantity']
             order_item_price = request.form['order_item_price']
 
@@ -178,7 +178,15 @@ def order_items():
     else:
         query = "SELECT * FROM `OrderItems`;"
         result = execute_query(db_connection, query).fetchall()
-        return render_template('orderitems.html', order_items = result)
+
+        # queries for Products, Orders, and Customers when adding new OrderItem
+        products_query = "SELECT `productID`, `productName` FROM `Products`;"
+        products_result = execute_query(db_connection, products_query).fetchall()
+
+        orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+        orders_result = execute_query(db_connection, orders_query).fetchall()
+
+        return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
 
 
 @app.route('/deleteorderitem/<int:id>')
