@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Results: Customers</title>
+{% endblock %}
+
+
+{% block body %}
+<div class="content">
+    <h1 class="text-center">Search Results</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Street Address</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Zip Code</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td scope="row">{{ customer[1] }}</td>
+                <td scope="row">{{ customer[2] }}</td>
+                <td scope="row">{{ customer[3] }}</td>
+                <td scope="row">{{ customer[4] }}</td>
+                <td scope="row">{{ customer[5] }}</td>
+                <td scope="row">{{ customer[6] }}</td>
+                <td scope="row">{{ customer[7] }}</td>
+                <td scope="row">{{ customer[8] }}</td>
+                <td scope="row">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
