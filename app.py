@@ -20,17 +20,32 @@ CUSTOMERS
 @app.route('/customers', methods=['POST', 'GET'])
 def customers():
     db_connection = connect_to_database()
+    query = "SELECT * FROM `Customers`;"
+    result = execute_query(db_connection, query).fetchall()
+    return render_template('customers.html', customers = result)
+
+@app.route('/addcustomer', methods=['POST','GET'])
+def add_customer():
+    db_connection = connect_to_database()
     
     if request.method == 'POST':
         try:
             first_name = request.form['first_name']
+            """if not first_name:
+                raise Exception ("First Name cannot be NULL")"""
             last_name = request.form['last_name']
+            """if not last_name:
+                raise Exception ("Last Name cannot be NULL")"""
             email = request.form['email']
             phone_number = request.form['phone_number']
             street_address = request.form['street_address']
             city = request.form['city']
             state = request.form['state']
             zip_code = request.form['zip_code']
+            check_null = [first_name, last_name, email, phone_number, street_address, city, state, zip_code]
+            for i in check_null:
+                if not i:
+                    raise Exception
 
             query = "INSERT INTO `Customers` (`firstName`, `lastName`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
             data = (first_name, last_name, email, phone_number, street_address, city, state, zip_code)
@@ -39,12 +54,22 @@ def customers():
             return redirect('/customers')
 
         except:
-            return "There was an issue adding the Customer."
+            return "There was an issue adding the Customer. Please make sure text fields are not empty."
 
-    else:
-        query = "SELECT * FROM `Customers`;"
-        result = execute_query(db_connection, query).fetchall()
-        return render_template('customers.html', customers = result)
+@app.route('/searchcustomer', methods=['POST','GET'])
+def search_customer():
+    db_connection = connect_to_database()
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+    phone_number = request.form['phone_number']
+    street_address = request.form['street_address']
+    city = request.form['city']
+    state = request.form['state']
+    zip_code = request.form['zip_code']
+    query = f"SELECT * FROM `Customers` WHERE (`firstName` = '{first_name}' OR '{first_name}' = '') AND (`lastName` = '{last_name}' OR '{last_name}' = '') AND (`email` = '{email}' OR '{email}' = '') AND (`phoneNumber` = '{phone_number}' OR '{phone_number}' = '') AND (`streetAddress` = '{street_address}' OR '{street_address}' = '') AND (`city` = '{city}' OR '{city}' = '') AND (`state` = '{state}' OR '{state}' = '') AND (`zipCode` = '{zip_code}' OR '{zip_code}' = '');"
+    result = execute_query(db_connection, query).fetchall()
+    return render_template('searchcustomer.html', customers = result)
 
 
 @app.route('/deletecustomer/<int:id>')
@@ -115,6 +140,7 @@ def orders():
         customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
         customers_result = execute_query(db_connection, customers_query).fetchall()
         return render_template('orders.html', orders = result, customers = customers_result)
+
 
 
 @app.route('/deleteorder/<int:id>')
@@ -322,6 +348,7 @@ def products():
         query = "SELECT * FROM `Products`;"
         result = execute_query(db_connection, query).fetchall()
         return render_template('products.html', products = result)
+        
 
 
 @app.route('/deleteproduct/<int:id>')
