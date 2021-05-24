@@ -37,14 +37,14 @@ SELECT * FROM Orders;
 
 -- Add New Order
 INSERT INTO Orders(customerID, totalPrice, orderDate, orderComments)
-VALUES (:customerIDInput, :totalPriceInput, :orderDateInput, :orderCommentsInput);
+VALUES (:customerID_selcted_from_dropdown_box, :totalPriceInput, :orderDateInput, :orderCommentsInput);
 
 -- Update Order
 -- Get an Order's data for the Update Order form
 SELECT * FROM Orders WHERE orderID = :orderID_selected_from_orders_page;
 
 -- Update an Order's data based on submission of the Update Order form
-UPDATE Orders SET customerID = :customerIDInput, totalPrice = :totalPriceInput, orderDate = :orderDateInput, orderComments = :orderCommentsInput
+UPDATE Orders SET customerID = :customerID_selected_from_dropdown_box, totalPrice = :totalPriceInput, orderDate = :orderDateInput, orderComments = :orderCommentsInput
 WHERE orderID = :orderID_selected_from_orders_page;
 
 -- Delete Order
@@ -58,14 +58,14 @@ SELECT * FROM OrderItems;
 
 -- Add New OrderItem
 INSERT INTO OrderItems(orderID, productID, orderItemQuantity, orderItemPrice)
-VALUES (:orderIDInput, :productIDInput, :orderItemQuantityInput, :orderItemPriceInput);
+VALUES (:orderID_selected_from_dropdown_box, :productID_selected_from_dropdown_box, :orderItemQuantityInput, :orderItemPriceInput);
 
 -- Update OrderItem
 -- Get an OrderItem's data for the Update Order Items form
 SELECT * FROM OrderItems WHERE orderItemID = :orderItemID_selected_from_orderItems_page;
 
 -- Update an OrderItem's data based on submission of the Update OrderItem form
-UPDATE OrderItems SET orderID = :orderIDInput, productID = :productIDInput, orderItemQuantity = :orderItemQuantityInput, orderItemPrice = :orderItemPriceInput
+UPDATE OrderItems SET orderID = :orderID_selected_from_dropdown_box, productID = :productID_selected_from_dropdown_box, orderItemQuantity = :orderItemQuantityInput, orderItemPrice = :orderItemPriceInput
 WHERE orderItemID = :orderItemID_selected_from_orderItems_page;
 
 -- Delete OrderItem
@@ -79,14 +79,14 @@ SELECT * FROM Shipments;
 
 -- Add New Shipment
 INSERT INTO Shipments(orderID, trackingNumber, dateShipped)
-VALUES(:orderIDInput, :trackingNumberInput, :dateShippedInput);
+VALUES(:orderID_selected_from_dropdown_box, :trackingNumberInput, :dateShippedInput);
 
 -- Update Shipment
 -- Get a Shipment's data for the Update Shipment form
 SELECT * FROM Shipments WHERE shipmentID = :shipmentID_selected_from_shipments_page;
 
 -- Update a Shipment's data based on submission of the Update Shipment form
-UPDATE Shipments SET orderID = :orderIDInput, trackingNumber = :trackingNumberInput, dateShipped = :dateShippedInput
+UPDATE Shipments SET orderID = :orderID_selected_from_dropdown_box, trackingNumber = :trackingNumberInput, dateShipped = :dateShippedInput, dateDelivered = :dateDeliveredInput
 WHERE shipmentID = :shipmentID_selected_from_shipments_page;
 
 -- Delete Shipment
