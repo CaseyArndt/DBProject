@@ -12,7 +12,12 @@
         <form action="/shipments" method="POST" class="text-center">
             <div class="row">
                 <div class="col">
-                    <input type="text" class="form-control" name="order_id" id="order_id" placeholder="Order ID">
+                    <select class="form-select" name="order" id ="order">
+                        <option selected>Choose Order</option>
+                        {% for order in orders %}
+                        <option value="{{order[0]}}">{{order[0]}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col">
                     <input type="text" class="form-control" name="tracking_number" id ="tracking_number" placeholder="Tracking Number">

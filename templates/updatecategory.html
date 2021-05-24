@@ -8,15 +8,15 @@
 {% block body %}
 <div class="container">
     <h1 class="text-center">Update Category</h1>
-    <form action="/updatecategory/{{category.category_id}}" method="POST" class="text-center">
+    <form action="/updatedcategory/{{category[0][0]}}" method="POST" class="text-center">
         <div class="row">
             <div class="col">
                 <label for="category_name">Category Name</label>
-                <input type="text" class="form-control" name="category_name" id="category_name" value="{{category.category_name}}">
+                <input type="text" class="form-control" name="category_name" id="category_name" value="{{category[0][1]}}">
             </div>
             <div class="col">
                 <label for="category_description">Category Description</label>
-                <input type="text" class="form-control" name="category_description" id ="category_description" value="{{category.category_description}}">
+                <input type="text" class="form-control" name="category_description" id ="category_description" value="{{category[0][2]}}">
             </div>
         </div>
         <br>
