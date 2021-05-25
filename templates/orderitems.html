@@ -22,7 +22,7 @@
                 <select class="form-select" name="product" id ="product">
                     <option selected>Choose Product</option>
                     {% for product in products %}
-                    <option value="{{product[0]}}">{{product[1]}}</option>
+                    <option value="{{product[0]}}">{{product[0]}}. {{product[1]}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -58,8 +58,8 @@
         <tbody>
             {% for order_item in order_items %}
             <tr>
-                <td scope="row">{{ order_item[1] }}</td>
                 <td scope="row">{{ order_item[2] }}</td>
+                <td scope="row">{{ order_item[1] }}</td>
                 <td scope="row">{{ order_item[3] }}</td>
                 <td scope="row">{{ order_item[4] }}</td>
                 <td scope="row">

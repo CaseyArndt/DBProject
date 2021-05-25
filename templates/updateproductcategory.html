@@ -8,15 +8,29 @@
 {% block body %}
 <div class="container">
     <h1 class="text-center">Update ProductCategory</h1>
-    <form action="/updateproductcategory/{{product_category.id}}" method="POST" class="text-center">
+    <form action="/updatedproductcategory/{{product_category[0][0]}}-{{product_category[0][1]}}" method="POST" class="text-center">
         <div class="row">
             <div class="col">
-                <label for="product_id">Product ID</label>
-                <input type="text" class="form-control" name="product_id" id="product_id" value="{{product_category.product_id}}">
+                <label for="product">Product</label>
+                <select class="form-select" name="product" id ="product">
+                    <option value="{{product_category[0][0]}}" selected>{{product_category[0][0]}}</option>
+                    {% for product in products %}
+                        {% if product[0] != product_category[0][0] %}
+                        <option value="{{product[0]}}">{{product[0]}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
             <div class="col">
-                <label for="category_id">Category ID</label>
-                <input type="text" class="form-control" name="category_id" id ="category_id" value="{{product_category.category_id}}">
+                <label for="category">Category</label>
+                <select class="form-select" name="category" id ="category">
+                    <option value="{{product_category[0][1]}}" selected>{{product_category[0][1]}}</option>
+                    {% for category in categories %}
+                        {% if category[0] != product_category[0][1] %}
+                        <option value="{{category[0]}}">{{category[0]}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <br>
