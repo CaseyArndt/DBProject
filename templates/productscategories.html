@@ -7,20 +7,20 @@
 
 {% block body %}
 <div class="container">
-    <h1 class="text-center" style="padding: 10px;">Add New ProductCategory</h1>
+    <h1 class="text-center" style="padding: 10px;">Add New ProductCategory or Search Existing ProductsCategories</h1>
     <form action="/productscategories" method="POST" class="text-center">
         <div class="row">
             <div class="col">
                 <select class="form-select" name="product" id ="product">
-                    <option selected>Choose Product</option>
+                    <option selected value="">Choose Product</option>
                     {% for product in products %}
-                    <option value="{{product[0]}}">{{product[2]}}</option>
+                    <option value="{{product[0]}}">{{product[1]}}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col">
                 <select class="form-select" name="category" id ="category">
-                    <option selected>Choose Category</option>
+                    <option selected value="">Choose Category</option>
                     {% for category in categories %}
                     <option value="{{category[0]}}">{{category[1]}}</option>
                     {% endfor %}
@@ -29,7 +29,8 @@
         </div>
         <br>
         <div class="form-group text-center">
-            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="submit" formaction="/addproductcategory" value="Add" class="btn btn-warning">
+            <input type="submit" formaction="/searchproductscategories" value="Search" class="btn btn-success">
         </div>
     </form>
 </div>
@@ -54,7 +55,7 @@
                 <td scope="row">{{ product_category[1] }}</td>
                 <td scope="row">
                     <a href="/updateproductcategory/{{product_category[0]}}-{{product_category[1]}}"><button type="button" class="btn btn-primary">Update</button></a>
-                    <a href="/deleteproductcategory/{{product_category[0]}}-{{product_category[1]}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    <a href="/deleteproductcategory?productID={{product_category[0]}}&categoryID={{product_category[1]}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}

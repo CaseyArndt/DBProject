@@ -20,10 +20,20 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Drop tables 
+--
+DROP TABLE IF EXISTS `ProductsCategories`;
+DROP TABLE IF EXISTS `Categories`;
+DROP TABLE IF EXISTS `OrderItems`;
+DROP TABLE IF EXISTS `Products`;
+DROP TABLE IF EXISTS `Shipments`;
+DROP TABLE IF EXISTS `Orders`;
+DROP TABLE IF EXISTS `Customers`;
+
+
+--
 -- Table structure for table `Categories`
 --
-
-DROP TABLE IF EXISTS `Categories`;
 CREATE TABLE `Categories` (
   `categoryID` int(11) NOT NULL AUTO_INCREMENT,
   `categoryName` varchar(255) NOT NULL,
@@ -45,8 +55,6 @@ INSERT INTO `Categories` (`categoryName`, `categoryDescription`) VALUES
 --
 -- Table structure for table `Customers`
 --
-
-DROP TABLE IF EXISTS `Customers`;
 CREATE TABLE `Customers` (
   `customerID` int(11) NOT NULL AUTO_INCREMENT,
   `firstName` varchar(255) NOT NULL,
@@ -76,8 +84,6 @@ INSERT INTO `Customers` (`firstName`, `lastName`, `email`, `phoneNumber`, `stree
 --
 -- Table structure for table `OrderItems`
 --
-
-DROP TABLE IF EXISTS `OrderItems`;
 CREATE TABLE `OrderItems` (
   `orderItemID` int(11) NOT NULL AUTO_INCREMENT,
   `orderID` int(11) NOT NULL,
@@ -101,8 +107,6 @@ INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderIte
 --
 -- Table structure for table `Orders`
 --
-
-DROP TABLE IF EXISTS `Orders`;
 CREATE TABLE `Orders` (
   `orderID` int(11) NOT NULL AUTO_INCREMENT,
   `customerID` int(11),
@@ -128,8 +132,6 @@ INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) 
 --
 -- Table structure for table `Products`
 --
-
-DROP TABLE IF EXISTS `Products`;
 CREATE TABLE `Products` (
   `productID` int(11) NOT NULL AUTO_INCREMENT,
   `productName` varchar(255) NOT NULL,
@@ -153,8 +155,6 @@ INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `prod
 --
 -- Table structure for table `ProductsCategories`
 --
-
-DROP TABLE IF EXISTS `ProductsCategories`;
 CREATE TABLE `ProductsCategories` (
   `productID` int(11),
   `categoryID` int(11),
@@ -175,8 +175,6 @@ INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES
 --
 -- Table structure for table `Shipments`
 --
-
-DROP TABLE IF EXISTS `Shipments`;
 CREATE TABLE `Shipments` (
   `shipmentID` int(11) NOT NULL AUTO_INCREMENT,
   `orderID` int(11) NOT NULL,
