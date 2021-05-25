@@ -24,7 +24,12 @@
                     <input type="text" class="form-control" name="product_description" id ="product_description" placeholder="Product Description">                    
                 </div>
                 <div class="col">
-                    <input type="text" class="form-control" name="category_id" id ="category_id" placeholder="Product Category">                    
+                    <select class="form-select" name="categories" id ="categories">
+                        <option selected>Choose Category</option>
+                        {% for category in categories %}
+                        <option value="{{category[0]}}">{{category[1]}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <br>
@@ -53,10 +58,10 @@
         <tbody>
             {% for product in products %}
             <tr>
-                <td scope="row">{{ product[1] }}</td>
                 <td scope="row">{{ product[2] }}</td>
-                <td scope="row">{{ product[3] }}</td>
+                <td scope="row">{{ product[1] }}</td>
                 <td scope="row">{{ product[4] }}</td>
+                <td scope="row">{{ product[3] }}</td>
                 <td scope="row">
                     <a href="/updateproduct/{{product[0]}}"><button type="button" class="btn btn-primary">Update</button></a>
                     <a href="/deleteproduct/{{product[0]}}"><button type="button" class="btn btn-danger">Delete</button></a>

@@ -14,7 +14,7 @@
                 <select class="form-select" name="product" id ="product">
                     <option selected>Choose Product</option>
                     {% for product in products %}
-                    <option value="{{product[0]}}">{{product[1]}}</option>
+                    <option value="{{product[0]}}">{{product[2]}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -53,8 +53,8 @@
                 <td scope="row">{{ product_category[0] }}</td>
                 <td scope="row">{{ product_category[1] }}</td>
                 <td scope="row">
-                    <a href="/updateproductcategory/{{product_category[0]}}"><button type="button" class="btn btn-primary">Update</button></a>
-                    <a href="/deleteproductcategory/{{product_category[0]}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    <a href="/updateproductcategory/{{product_category[0]}}-{{product_category[1]}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deleteproductcategory/{{product_category[0]}}-{{product_category[1]}}"><button type="button" class="btn btn-danger">Delete</button></a>
                 </td>
             </tr>
             {% endfor %}
