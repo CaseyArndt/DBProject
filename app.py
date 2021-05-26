@@ -1,7 +1,6 @@
 from logging import exception
 import re
 from flask import Flask, render_template, request, redirect
-from db import *
 from db_credentials import host, user, passwd, db
 from db_connector import connect_to_database, execute_query
 import datetime
@@ -20,44 +19,44 @@ def index():
 CUSTOMERS
 """
 
-@app.route('/customers', methods=['POST', 'GET'])
+@app.route('/customers')
 def customers():
     db_connection = connect_to_database()
+
     query = "SELECT * FROM `Customers`;"
     result = execute_query(db_connection, query).fetchall()
     return render_template('customers.html', customers = result)
 
-@app.route('/addcustomer', methods=['POST','GET'])
+
+@app.route('/addcustomer', methods=['POST'])
 def add_customer():
     db_connection = connect_to_database()
+
+    first_name = request.form['first_name'] or None
+    last_name = request.form['last_name'] or None
+    email = request.form['email'] or None
+    phone_number = request.form['phone_number'] or None
+    street_address = request.form['street_address'] or None
+    city = request.form['city'] or None
+    state = request.form['state'] or None
+    zip_code = request.form['zip_code'] or None
+
+    try:
+
+        query = "INSERT INTO `Customers` (`firstName`, `lastName`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        data = (first_name, last_name, email, phone_number, street_address, city, state, zip_code)
+        execute_query(db_connection, query, data)
+
+        return redirect('/customers')
     
-    if request.method == 'POST':
-        try:
-            first_name = request.form['first_name']
-            last_name = request.form['last_name']
-            email = request.form['email']
-            phone_number = request.form['phone_number']
-            street_address = request.form['street_address']
-            city = request.form['city']
-            state = request.form['state']
-            zip_code = request.form['zip_code']
-            check_null = [first_name, last_name, email, phone_number, street_address, city, state, zip_code]
-            for i in check_null:
-                if not i:
-                    raise Exception
+    except:
+        return "There was an issue adding the Customer. Please make sure text fields are not empty."
 
-            query = "INSERT INTO `Customers` (`firstName`, `lastName`, `email`, `phoneNumber`, `streetAddress`, `city`, `state`, `zipCode`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            data = (first_name, last_name, email, phone_number, street_address, city, state, zip_code)
-            execute_query(db_connection, query, data)
 
-            return redirect('/customers')
-
-        except:
-            return "There was an issue adding the Customer. Please make sure text fields are not empty."
-
-@app.route('/searchcustomer', methods=['POST','GET'])
-def search_customer():
+@app.route('/searchcustomers', methods=['POST'])
+def search_customers():
     db_connection = connect_to_database()
+
     first_name = request.form['first_name']
     last_name = request.form['last_name']
     email = request.form['email']
@@ -66,9 +65,23 @@ def search_customer():
     city = request.form['city']
     state = request.form['state']
     zip_code = request.form['zip_code']
-    query = f"SELECT * FROM `Customers` WHERE (`firstName` = '{first_name}' OR '{first_name}' = '') AND (`lastName` = '{last_name}' OR '{last_name}' = '') AND (`email` = '{email}' OR '{email}' = '') AND (`phoneNumber` = '{phone_number}' OR '{phone_number}' = '') AND (`streetAddress` = '{street_address}' OR '{street_address}' = '') AND (`city` = '{city}' OR '{city}' = '') AND (`state` = '{state}' OR '{state}' = '') AND (`zipCode` = '{zip_code}' OR '{zip_code}' = '');"
-    result = execute_query(db_connection, query).fetchall()
-    return render_template('searchcustomer.html', customers = result)
+
+    try:
+        query = f"""SELECT * FROM `Customers` 
+        WHERE (`firstName` = '{first_name}' OR '{first_name}' = '') 
+        AND (`lastName` = '{last_name}' OR '{last_name}' = '') 
+        AND (`email` = '{email}' OR '{email}' = '') 
+        AND (`phoneNumber` = '{phone_number}' OR '{phone_number}' = '') 
+        AND (`streetAddress` = '{street_address}' OR '{street_address}' = '') 
+        AND (`city` = '{city}' OR '{city}' = '') 
+        AND (`state` = '{state}' OR '{state}' = '') 
+        AND (`zipCode` = '{zip_code}' OR '{zip_code}' = '');"""
+
+        result = execute_query(db_connection, query).fetchall()
+        return render_template('customers.html', customers = result)
+    
+    except:
+        return "There was an issue searching Customers."
 
 
 @app.route('/deletecustomer/<int:id>')
@@ -113,44 +126,63 @@ def update_customer_process(id):
 ORDERS
 """
 
-@app.route('/orders', methods=['POST', 'GET'])
+@app.route('/orders')
 def orders():
     db_connection = connect_to_database()
+ 
+    query = "SELECT * FROM `Orders`;"
+    result = execute_query(db_connection, query).fetchall()
 
-    if request.method == 'POST':
-        try:
-            customer_id = request.form['customer']
-            total_price = request.form['total_price']
-            order_date = request.form['order_date']
-            order_comments = request.form['order_comments']
-            if customer_id == "":
-                customer_id = None
-            check_null = [total_price, order_date]
-            for i in check_null:
-                if not i:
-                    raise Exception
-            date_format = "%Y-%m-%d"
-            try:
-                datetime.datetime.strptime(order_date, date_format)
-            except:
-                raise Exception
-            query = "INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) VALUES (%s, %s, %s, %s)"
-            data = (customer_id, total_price, order_date, order_comments)
-            execute_query(db_connection, query, data)
+    customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
+    customers_result = execute_query(db_connection, customers_query).fetchall()
+
+    return render_template('orders.html', orders = result, customers = customers_result)
+
+
+@app.route('/addorder', methods=['POST'])
+def add_order():
+    db_connection = connect_to_database()
         
-            return redirect('/orders')
+    customer_id = request.form['customer'] or None
+    total_price = request.form['total_price'] or None
+    order_date = request.form['order_date'] or None
+    order_comments = request.form['order_comments'] or None
 
-        except:
-            return "There was an issue adding the Order. Please make sure all fields are filled out properly."
+    try:
+        query = "INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) VALUES (%s, %s, %s, %s)"
+        data = (customer_id, total_price, order_date, order_comments)
+        execute_query(db_connection, query, data)
+    
+        return redirect('/orders')
 
-    else:
-        query = "SELECT * FROM `Orders`;"
+    except:
+        return "There was an issue adding the Order. Please make sure text fields aren't empty."
+
+
+@app.route('/searchorders', methods=['POST'])
+def search_orders():
+    db_connection = connect_to_database()
+    
+    customer_id = request.form['customer']
+    total_price = request.form['total_price']
+    order_date = request.form['order_date']
+    order_comments = request.form['order_comments']
+    try:
+        query = f"""SELECT * FROM `Orders` 
+        WHERE (`customerID` = '{customer_id}' OR '{customer_id}' = '') 
+        AND (`totalPrice` = '{total_price}' OR '{total_price}' = '') 
+        AND (`orderDate` = '{order_date}' OR '{order_date}' = '') 
+        AND (`orderComments` = '{order_comments}' OR '{order_comments}' = '');"""
+
         result = execute_query(db_connection, query).fetchall()
 
         customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
         customers_result = execute_query(db_connection, customers_query).fetchall()
+
         return render_template('orders.html', orders = result, customers = customers_result)
 
+    except:
+        return "There was an issue searching Orders."
 
 @app.route('/deleteorder/<int:id>')
 def delete_order(id):
@@ -207,31 +239,62 @@ def update_order_process(id):
 ORDER ITEMS
 """
 
-@app.route('/orderitems', methods=['POST', 'GET'])
+@app.route('/orderitems')
 def order_items():
     db_connection = connect_to_database()
 
-    if request.method == 'POST':
-        try:
-            order_id = request.form['order']
-            product_id = request.form['product']
-            order_item_quantity = request.form['order_item_quantity']
-            order_item_price = request.form['order_item_price']
+    query = "SELECT * FROM `OrderItems`;"
+    result = execute_query(db_connection, query).fetchall()
 
-            query = "INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderItemPrice`) VALUES (%s, %s, %s, %s)"
-            data = (order_id, product_id, order_item_quantity, order_item_price)
-            execute_query(db_connection, query, data)
+    # queries for Products and Orders when adding new OrderItem
+    products_query = "SELECT `productID`, `productName` FROM `Products`;"
+    products_result = execute_query(db_connection, products_query).fetchall()
+
+    orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+    orders_result = execute_query(db_connection, orders_query).fetchall()
+
+    return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
+
+
+@app.route('/addorderitem', methods=['POST'])
+def add_order_item():
+    db_connection = connect_to_database()
+
+    order_id = request.form['order'] or None
+    product_id = request.form['product'] or None
+    order_item_quantity = request.form['order_item_quantity'] or None
+    order_item_price = request.form['order_item_price'] or None
+
+    try:
+        query = "INSERT INTO `OrderItems` (`orderID`, `productID`, `orderItemQuantity`, `orderItemPrice`) VALUES (%s, %s, %s, %s)"
+        data = (order_id, product_id, order_item_quantity, order_item_price)
+        execute_query(db_connection, query, data)
+    
+        return redirect('/orderitems')
+
+    except:
+        return "There was an issue adding the Order Item. Please make sure text fields aren't empty"
+
+
+@app.route('/searchorderitems', methods=['POST'])
+def search_order_items():
+    db_connection = connect_to_database()
+
+    order_id = request.form['order']
+    product_id = request.form['product']
+    order_item_quantity = request.form['order_item_quantity']
+    order_item_price = request.form['order_item_price']
+
+    try:
+        query = f"""SELECT * FROM `OrderItems` 
+        WHERE (`orderID` = '{order_id}' OR '{order_id}' = '') 
+        AND (`productID` = '{product_id}' OR '{product_id}' = '') 
+        AND (`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
+        AND (`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
         
-            return redirect('/orderitems')
-
-        except:
-            return "There was an issue adding the Order Item."
-
-    else:
-        query = "SELECT * FROM `OrderItems`;"
         result = execute_query(db_connection, query).fetchall()
 
-        # queries for Products, Orders, and Customers when adding new OrderItem
+        # queries for Products and Orders
         products_query = "SELECT `productID`, `productName` FROM `Products`;"
         products_result = execute_query(db_connection, products_query).fetchall()
 
@@ -239,6 +302,9 @@ def order_items():
         orders_result = execute_query(db_connection, orders_query).fetchall()
 
         return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
+
+    except:
+        return "There was an issue searching Order Items."
 
 
 @app.route('/deleteorderitem/<int:id>')
@@ -248,7 +314,9 @@ def delete_order_item(id):
     try:
         query = f"DELETE FROM `OrderItems` WHERE `orderItemID` = {id};"
         execute_query(db_connection, query)
+
         return redirect('/orderitems')
+
     except:
         return "There was an error deleting this Order Item."
 
@@ -294,51 +362,65 @@ def update_orderItems_process(id):
 SHIPMENTS
 """
 
-@app.route('/shipments', methods=['POST', 'GET'])
+@app.route('/shipments')
 def shipments():
     db_connection = connect_to_database()
 
-    if request.method == 'POST':
-        try:
-            order_id = request.form['order']
-            tracking_number = request.form['tracking_number']
-            date_shipped = request.form['date_shipped']
-            date_delivered = request.form['date_delivered']
-            date_format = "%Y-%m-%d"
-            try:
-                datetime.datetime.strptime(date_shipped, date_format)
-            except:
-                raise Exception
+    query = "SELECT * FROM `Shipments`;"
+    result = execute_query(db_connection, query).fetchall()
 
-            try:
-                if date_delivered == "":
-                    pass
-                else:
-                    datetime.datetime.strptime(date_delivered, date_format)
-            except:
-                raise Exception
+    # query for Orders when adding new Shipment
+    orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+    orders_result = execute_query(db_connection, orders_query).fetchall()
 
-            check_null = [order_id, tracking_number, date_shipped]
-            for i in check_null:
-                if not i:
-                    raise Exception
+    return render_template('shipments.html', shipments = result, orders = orders_result)
 
-            query = "INSERT INTO `Shipments` (`orderID`, `trackingNumber`, `dateShipped`, `dateDelivered`) VALUES (%s, %s, %s, %s);"
-            data = (order_id, tracking_number, date_shipped, date_delivered)
-            execute_query(db_connection, query, data)
+
+@app.route('/addshipment', methods=['POST'])
+def add_shipment():
+    db_connection = connect_to_database()
+    
+    order_id = request.form['order_id'] or None
+    tracking_number = request.form['tracking_number'] or None
+    date_shipped = request.form['date_shipped'] or None
+    date_delivered = request.form['date_delivered'] or None
+
+    try:
+        query = "INSERT INTO `Shipments` (`orderID`, `trackingNumber`, `dateShipped`, `dateDelivered`) VALUES (%s, %s, %s, %s)"
+        data = (order_id, tracking_number, date_shipped, date_delivered)
+        execute_query(db_connection, query, data)
+    
+        return redirect('/shipments')
+
+    except:
+        return "There was an issue adding the Shipment. Please make sure text fields aren't empty."
+
+
+@app.route('/searchshipments', methods=['POST'])
+def search_shipments():
+    db_connection = connect_to_database()
+    
+    order_id = request.form['order_id']
+    tracking_number = request.form['tracking_number']
+    date_shipped = request.form['date_shipped']
+    date_delivered = request.form['date_delivered']
+
+    try:
+        query = f"""SELECT * FROM `Shipments` 
+        WHERE (`orderID` = '{order_id}' OR '{order_id}' = '') 
+        AND (`trackingNumber` = '{tracking_number}' OR '{tracking_number}' = '') 
+        AND (`dateShipped` = '{date_shipped}' OR '{date_shipped}' = '') 
+        AND (`dateDelivered` = '{date_delivered}' OR '{date_delivered}' = '');"""
         
-            return redirect('/shipments')
-
-        except:
-            return "There was an issue adding the Shipment."
-
-    else:
-        query = "SELECT * FROM `Shipments`;"
         result = execute_query(db_connection, query).fetchall()
 
-        orders_query = "SELECT `orderID` FROM `Orders`;"
+        orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
         orders_result = execute_query(db_connection, orders_query).fetchall()
+        
         return render_template('shipments.html', shipments = result, orders = orders_result)
+
+    except:
+        return "There was an issue searching Shipments."
 
 
 @app.route('/deleteshipment/<int:id>')
@@ -407,47 +489,68 @@ def update_shipment_process(id):
 PRODUCTS
 """
 
-@app.route('/products', methods=['POST', 'GET'])
+@app.route('/products')
 def products():
     db_connection = connect_to_database()
 
-    if request.method == 'POST':
-        try:
-            product_name = request.form['product_name']
-            product_inventory = request.form['product_inventory']
-            product_price = request.form['product_price']
-            product_description = request.form['product_description']
-            category_id = request.form['categories']
+    query = "SELECT * FROM `Products`;"
+    result = execute_query(db_connection, query).fetchall()
 
-            check_null = [product_name, product_inventory, product_price]
-            for i in check_null:
-                if not i:
-                    raise Exception
+    category_query = "SELECT `categoryID`, `categoryName` FROM `Categories`;"
+    category_result = execute_query(db_connection, category_query)
 
-            query = "INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `productDescription`) VALUES (%s, %s, %s, %s)"
-            data = (product_name, product_inventory, product_price, product_description)
-            cursor = execute_query(db_connection, query, data)
+    return render_template('products.html', products = result, categories = category_result)
+    
 
-            # Add Product to ProductsCategories if Category is specified
-            if category_id and category_id != "NULL":
-                product_id = cursor.lastrowid
-                query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
-                data = (product_id, category_id)
-                execute_query(db_connection, query, data)
+@app.route('/addproduct', methods=['POST'])
+def add_product():
+    db_connection = connect_to_database()
+    
+    product_name = request.form['product_name'] or None
+    product_inventory = request.form['product_inventory'] or None
+    product_price = request.form['product_price'] or None
+    product_description = request.form['product_description'] or None
+    category_id = request.form['category_id'] or None
+
+    try:
+        query = "INSERT INTO `Products` (`productName`, `productInventory`, `productPrice`, `productDescription`) VALUES (%s, %s, %s, %s)"
+        data = (product_name, product_inventory, product_price, product_description)
+        cursor = execute_query(db_connection, query, data)
+
+        # Add Product to ProductsCategories if Category is specified
+        if category_id:
+            product_id = cursor.lastrowid
+            query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
+            data = (product_id, category_id)
+            execute_query(db_connection, query, data)
+    
+        return redirect('/products')
+
+    except:
+        return "There was an issue adding the Product. Please make sure text fields aren't empty."
+
+
+@app.route('/searchproducts', methods=['POST'])
+def search_products():
+    db_connection = connect_to_database()
+    
+    product_name = request.form['product_name']
+    product_inventory = request.form['product_inventory']
+    product_price = request.form['product_price']
+    product_description = request.form['product_description']
+
+    try:
+        query = f"""SELECT * FROM `Products` 
+        WHERE (`productName` = '{product_name}' OR '{product_name}' = '') 
+        AND (`productInventory` = '{product_inventory}' OR '{product_inventory}' = '') 
+        AND (`productPrice` = '{product_price}' OR '{product_price}' = '') 
+        AND (`productDescription` = '{product_description}' OR '{product_description}' = '');"""
         
-            return redirect('/products')
-
-        except:
-            return "There was an issue adding the Product."
-
-    else:
-        query = "SELECT * FROM `Products`;"
         result = execute_query(db_connection, query).fetchall()
+        return render_template('products.html', products = result)
 
-        categories_query = "SELECT `categoryID`, `categoryName` FROM `Categories`;"
-        categories_result = execute_query(db_connection, categories_query).fetchall()
-        return render_template('products.html', products = result, categories = categories_result)
-        
+    except:
+        return "There was an issue searching Products."
 
 
 @app.route('/deleteproduct/<int:id>')
@@ -505,32 +608,49 @@ def update_product_process(id):
 CATEGORIES
 """
 
-@app.route('/categories', methods=['POST', 'GET'])
+@app.route('/categories')
 def categories():
     db_connection = connect_to_database()
 
-    if request.method == 'POST':
-        try:
-            category_name = request.form['category_name']
-            category_description = request.form['category_description']
+    query = "SELECT * FROM `Categories`;"
+    result = execute_query(db_connection, query).fetchall()
+    return render_template('categories.html', categories = result)
 
-            if not category_name:
-                raise Exception
 
-            query = "INSERT INTO `Categories` (`categoryName`, `categoryDescription`) VALUES (%s, %s)"
-            data = (category_name, category_description)
-            execute_query(db_connection, query, data)
-            
-        
-            return redirect('/categories')
+@app.route('/addcategory', methods=['POST'])
+def add_category():
+    db_connection = connect_to_database()
 
-        except:
-            return "There was an issue adding the Category."
+    category_name = request.form['category_name'] or None
+    category_description = request.form['category_description'] or None
+    
+    try:
+        query = "INSERT INTO `Categories` (`categoryName`, `categoryDescription`) VALUES (%s, %s)"
+        data = (category_name, category_description)
+        execute_query(db_connection, query, data)
+    
+        return redirect('/categories')
+    
+    except:
+        return "There was an issue adding the Category. Please make sure text fields are not empty."
 
-    else:
-        query = "SELECT * FROM `Categories`;"
+
+@app.route('/searchcategories', methods=['POST'])
+def search_categories():
+    db_connection = connect_to_database()
+
+    category_name = request.form['category_name']
+    category_description = request.form['category_description']
+    try:
+        query = f"""SELECT * FROM `Categories` 
+        WHERE (`categoryName` = '{category_name}' OR '{category_name}' = '') 
+        AND (`categoryDescription` = '{category_description}' OR '{category_description}' = '');"""
+
         result = execute_query(db_connection, query).fetchall()
         return render_template('categories.html', categories = result)
+    
+    except:
+        return "There was an issue searching Categories."
 
 
 @app.route('/deletecategory/<int:id>')
@@ -576,28 +696,54 @@ def update_category_process(id):
 PRODUCTSCATEGORIES
 """
 
-@app.route('/productscategories', methods=['POST', 'GET'])
+@app.route('/productscategories')
 def products_categories():
     db_connection = connect_to_database()
 
-    if request.method == 'POST':
-        try:
-            product_id = request.form['product']
-            category_id = request.form['category']
-            
-            query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
-            data = (product_id, category_id)
-            execute_query(db_connection, query, data)
-        
-            return redirect('/productscategories')
+    query = "SELECT * FROM `ProductsCategories`;"
+    result = execute_query(db_connection, query).fetchall()
 
-        except:
-            return "There was an issue adding the ProductCategory."
+    # queries and results for adding new productcategory by name in drop down list
+    products_query = "SELECT * FROM `Products`;"
+    products_result = execute_query(db_connection, products_query)
+    categories_query = "SELECT * FROM `Categories`;"
+    categories_result = execute_query(db_connection, categories_query)
 
-    else:
-        query = "SELECT * FROM `ProductsCategories`;"
+    return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
+
+
+@app.route('/addproductcategory', methods=['POST'])
+def add_product_category():
+    db_connection = connect_to_database()
+
+    product_id = request.form['product'] or None
+    category_id = request.form['category'] or None
+
+    try:
+        query = "INSERT INTO `ProductsCategories` (`productID`, `categoryID`) VALUES (%s, %s)"
+        data = (product_id, category_id)
+        execute_query(db_connection, query, data)
+
+        return redirect('/productscategories')
+    
+    except:
+        return "There was an issue adding the ProductCategory. Please make sure fields are not empty."
+
+
+@app.route('/searchproductscategories', methods=['POST'])
+def search_products_categories():
+    db_connection = connect_to_database()
+
+    product_id = request.form['product']
+    category_id = request.form['category']
+
+    try:
+        query = f"""SELECT * FROM `ProductsCategories` 
+        WHERE (`productID` = '{product_id}' OR '{product_id}' = '') 
+        AND (`categoryID` = '{category_id}' OR '{category_id}' = '');"""
+
         result = execute_query(db_connection, query).fetchall()
-
+        
         # queries and results for adding new productcategory by name in drop down list
         products_query = "SELECT * FROM `Products`;"
         products_result = execute_query(db_connection, products_query)
@@ -605,16 +751,22 @@ def products_categories():
         categories_result = execute_query(db_connection, categories_query)
 
         return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
+    
+    except:
+        return "There was an issue searching ProductsCategories."
 
-@app.route('/deleteproductcategory/<string:id_string>', methods=['GET'])
-def delete_product_category(id_string):
+
+@app.route('/deleteproductcategory')
+def delete_product_category():
     db_connection = connect_to_database()
+
     try:
-        id_string_split = id_string.split('-', 1)
-        product_id = int(id_string_split[0])
-        category_id = int(id_string_split[1])
-        query = f"DELETE FROM `ProductsCategories` WHERE `categoryID` = {category_id} AND `productID` = {product_id};"
+        product_id = request.args.get('productID', None)
+        category_id = request.args.get('categoryID', None)
+
+        query = f"DELETE FROM `ProductsCategories` WHERE `productID` = {product_id} AND `categoryID` = {category_id};"
         execute_query(db_connection, query)
+        
         return redirect('/productscategories')
     except:
         return "There was an error deleting this Category."
