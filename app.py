@@ -767,12 +767,13 @@ def delete_product_category():
         return "There was an error deleting this Category."
 
 
-@app.route('/updateproductcategory/<string:id_string>', methods=['POST', 'GET'])
-def update_product_category(id_string):
+@app.route('/updateproductcategory/', methods=['POST', 'GET'])
+def update_product_category():
     db_connection = connect_to_database()
-    id_string_split = id_string.split('-', 1)
-    product_id = int(id_string_split[0])
-    category_id = int(id_string_split[1])
+
+    product_id = request.args.get('productID', None)
+    category_id = request.args.get('categoryID', None)
+
     query = f"SELECT * FROM `ProductsCategories` WHERE `productID` = {product_id} AND `categoryID` = {category_id};"
     result = execute_query(db_connection, query).fetchall()
 
@@ -784,21 +785,19 @@ def update_product_category(id_string):
     return render_template('updateproductcategory.html', product_category = result, products = products_result, categories = categories_result)
 
 
-@app.route('/updatedproductcategory/<string:id_string>', methods=['POST', 'GET'])
-def update_productCategory_process(id_string):
-    try:
-        db_connection = connect_to_database()
-        id_string_split = id_string.split('-', 1)
-        product_id = int(id_string_split[0])
-        category_id = int(id_string_split[1])
-        product_id_new = request.form['product']
-        category_id_new = request.form['category']
+@app.route('/updatedproductcategory/', methods=['POST', 'GET'])
+def update_productCategory_process():
+    db_connection = connect_to_database()
 
-        query = f"UPDATE ProductsCategories SET productID = {product_id_new}, categoryID = {category_id_new} WHERE productID = {product_id} AND categoryID = {category_id};"
-        execute_query(db_connection, query)
-        return redirect('/productscategories')
-    except:
-        return "You have entered an invalid value. Please make sure all fields are filled out properly."
+    product_id = request.args.get('productID', None)
+    category_id = request.args.get('categoryID', None)
+
+    product_id_new = request.form['product'] or None
+    category_id_new = request.form['category'] or None
+
+    query = f"UPDATE `ProductsCategories` SET `productID` = {product_id_new}, `categoryID` = {category_id_new} WHERE `productID` = {product_id} AND `categoryID` = {category_id};"
+    execute_query(db_connection, query)
+    return redirect('/productscategories')
 
 
 if __name__ == "__main__":
