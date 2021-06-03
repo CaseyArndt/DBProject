@@ -145,10 +145,11 @@ def add_order():
         
     customer_id = request.form['customer'] or None
     total_price = request.form['total_price'] or None
-    order_date = request.form['order_date'] or None
+    x = request.form['order_date'] or None
     order_comments = request.form['order_comments'] or None
 
     try:
+        order_date = datetime.datetime.strptime(x, "%Y-%m-%d")
         query = "INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) VALUES (%s, %s, %s, %s)"
         data = (customer_id, total_price, order_date, order_comments)
         execute_query(db_connection, query, data)
@@ -156,7 +157,7 @@ def add_order():
         return redirect('/orders')
 
     except:
-        return "There was an issue adding the Order. Please make sure text fields aren't empty."
+        return "There was an issue adding the Order. Please make sure text fields are filled out properly."
 
 
 @app.route('/searchorders', methods=['POST'])
@@ -220,13 +221,8 @@ def update_order_process(id):
         if customer_id == "":
                 customer_id = None
         total_price = request.form['total_price']
-        order_date = request.form['order_date']
-        # date validation from https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
-        date_format = "%Y-%m-%d"
-        try:
-            datetime.datetime.strptime(order_date, date_format)
-        except:
-            raise Exception
+        x = request.form['order_date']
+        order_date = datetime.datetime.strptime(x, "%Y-%m-%d")
         order_comments = request.form['order_comments']
         query = f"UPDATE `Orders` SET `customerID` = {customer_id}, `totalPrice` = {total_price}, `orderDate` = '{order_date}', `orderComments` = '{order_comments}' WHERE `orderID` = {id};"
         execute_query(db_connection, query)
@@ -382,10 +378,17 @@ def add_shipment():
     
     order_id = request.form['order_id'] or None
     tracking_number = request.form['tracking_number'] or None
-    date_shipped = request.form['date_shipped'] or None
-    date_delivered = request.form['date_delivered'] or None
+    x = request.form['date_shipped'] or None
+    y = request.form['date_delivered'] or None
+
+    
 
     try:
+        if y is None:
+            date_delivered = None
+        else:
+            date_delivered = datetime.datetime.strptime(y, "%Y-%m-%d")
+        date_shipped = datetime.datetime.strptime(x, "%Y-%m-%d")
         query = "INSERT INTO `Shipments` (`orderID`, `trackingNumber`, `dateShipped`, `dateDelivered`) VALUES (%s, %s, %s, %s)"
         data = (order_id, tracking_number, date_shipped, date_delivered)
         execute_query(db_connection, query, data)
@@ -393,7 +396,7 @@ def add_shipment():
         return redirect('/shipments')
 
     except:
-        return "There was an issue adding the Shipment. Please make sure text fields aren't empty."
+        return "There was an issue adding the Shipment. Please make sure the fields are filled out properly."
 
 
 @app.route('/searchshipments', methods=['POST'])
@@ -454,26 +457,18 @@ def update_shipment(id):
 def update_shipment_process(id):
     try:
         db_connection = connect_to_database()
-        order_id = request.form['order']
-        tracking_number = request.form['tracking_number']
-        date_shipped = request.form['date_shipped']
-        date_delivered = request.form['date_delivered']
-        # date validation from https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
-        date_format = "%Y-%m-%d"
-        try:
-            datetime.datetime.strptime(date_shipped, date_format)
-        except:
-            raise Exception
+        order_id = request.form['order'] or None
+        tracking_number = request.form['tracking_number'] or None
+        x = request.form['date_shipped'] or None
+        y = request.form['date_delivered'] or None
 
-        try:
-            if date_delivered == "None":
-                pass
-            else:
-                datetime.datetime.strptime(date_delivered, date_format)
-        except:
-            raise Exception
+        if y is None:
+            date_delivered = None
+        else:
+            date_delivered = datetime.datetime.strptime(y, "%Y-%m-%d")
+        date_shipped = datetime.datetime.strptime(x, "%Y-%m-%d")
 
-        check_null = [order_id, tracking_number, date_shipped]
+        check_null = [order_id, date_shipped]
         for i in check_null:
             if not i:
                 raise Exception
