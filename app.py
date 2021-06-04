@@ -757,7 +757,7 @@ PRODUCTSCATEGORIES
 def products_categories():
     db_connection = connect_to_database()
 
-    query = """SELECT p.productName, c.categoryName
+    query = """SELECT pc.productID, pc.categoryID, p.productName, c.categoryName
         FROM `ProductsCategories` pc
         INNER JOIN `Products` p ON pc.productID = p.productID
         INNER JOIN `Categories` c ON pc.categoryID = c.categoryID;"""
