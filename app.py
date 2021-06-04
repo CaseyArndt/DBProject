@@ -275,7 +275,7 @@ def order_items():
     products_query = "SELECT `productID`, `productName` FROM `Products`;"
     products_result = execute_query(db_connection, products_query).fetchall()
 
-    orders_query = """"SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+    orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
     FROM `Orders` o
     INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
     orders_result = execute_query(db_connection, orders_query).fetchall()
