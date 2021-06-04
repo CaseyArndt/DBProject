@@ -319,7 +319,7 @@ def search_order_items():
         INNER JOIN `Customers` c ON ord.customerID = c.customerID 
         ) o ON oi.orderID = o.orderID
         INNER JOIN `Products` p ON oi.productID = p.productID;
-        WHERE (oi.`orderID` = '{order_id}' OR '{order_id}' = '') 
+        WHERE (o.`orderID` = '{order_id}' OR '{order_id}' = '') 
         AND (oi.`productID` = '{product_id}' OR '{product_id}' = '') 
         AND (oi.`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
         AND (oi.`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
