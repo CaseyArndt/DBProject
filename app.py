@@ -464,7 +464,7 @@ def search_shipments():
     date_delivered = request.form['date_delivered']
 
     try:
-        query = f"""SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
+        query = f"""SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered, s.orderID
             FROM `Shipments` s
             INNER JOIN 
             (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
