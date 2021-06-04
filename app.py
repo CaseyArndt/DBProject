@@ -185,11 +185,11 @@ def search_orders():
         query = f"""SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
         FROM `Orders` o 
         INNER JOIN `Customers` c 
-        ON o.customerID = c. customerID 
-        WHERE (`customerID` = '{customer_id}' OR '{customer_id}' = '') 
-        AND (`totalPrice` = '{total_price}' OR '{total_price}' = '') 
-        AND (`orderDate` = '{order_date}' OR '{order_date}' = '') 
-        AND (`orderComments` = '{order_comments}' OR '{order_comments}' = '');"""
+        ON o.customerID = c.customerID 
+        WHERE (c.`customerID` = '{customer_id}' OR '{customer_id}' = '') 
+        AND (o.`totalPrice` = '{total_price}' OR '{total_price}' = '') 
+        AND (o.`orderDate` = '{order_date}' OR '{order_date}' = '') 
+        AND (o.`orderComments` = '{order_comments}' OR '{order_comments}' = '');"""
 
         result = execute_query(db_connection, query).fetchall()
 
