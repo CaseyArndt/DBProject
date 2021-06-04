@@ -261,7 +261,14 @@ ORDER ITEMS
 def order_items():
     db_connection = connect_to_database()
 
-    query = "SELECT * FROM `OrderItems`;"
+    query = """SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice
+    FROM `OrderItems` oi
+    INNER JOIN
+    (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+    FROM `Orders` ord
+    INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+    ) o ON oi.orderID = o.orderID
+    INNER JOIN `Products` p ON oi.productID = p.productID;"""
     result = execute_query(db_connection, query).fetchall()
 
     # queries for Products and Orders when adding new OrderItem
@@ -304,11 +311,18 @@ def search_order_items():
     order_item_price = request.form['order_item_price']
 
     try:
-        query = f"""SELECT * FROM `OrderItems` 
-        WHERE (`orderID` = '{order_id}' OR '{order_id}' = '') 
-        AND (`productID` = '{product_id}' OR '{product_id}' = '') 
-        AND (`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
-        AND (`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
+        query = f"""SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice
+        FROM `OrderItems` oi
+        INNER JOIN
+        (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+        FROM `Orders` ord
+        INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+        ) o ON oi.orderID = o.orderID
+        INNER JOIN `Products` p ON oi.productID = p.productID;
+        WHERE (oi.`orderID` = '{order_id}' OR '{order_id}' = '') 
+        AND (oi.`productID` = '{product_id}' OR '{product_id}' = '') 
+        AND (oi.`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
+        AND (oi.`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
         
         result = execute_query(db_connection, query).fetchall()
 
