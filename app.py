@@ -471,7 +471,7 @@ def search_shipments():
             FROM `Orders` ord
             INNER JOIN `Customers` c ON ord.customerID = c.customerID 
             ) o ON s.orderID = o.orderID` 
-            WHERE (s.`orderID` = '{order_id}' OR '{order_id}' = '') 
+            WHERE (o.`orderID` = '{order_id}' OR '{order_id}' = '') 
             AND (s.`trackingNumber` = '{tracking_number}' OR '{tracking_number}' = '') 
             AND (s.`dateShipped` = '{date_shipped}' OR '{date_shipped}' = '') 
             AND (s.`dateDelivered` = '{date_delivered}' OR '{date_delivered}' = '');"""
