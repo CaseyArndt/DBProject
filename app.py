@@ -140,7 +140,10 @@ ORDERS
 def orders():
     db_connection = connect_to_database()
  
-    query = "SELECT * FROM `Orders`;"
+    query = """SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
+        FROM `Orders` o 
+        INNER JOIN `Customers` c 
+        ON o.customerID = c. customerID;"""    
     result = execute_query(db_connection, query).fetchall()
 
     customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
@@ -179,11 +182,14 @@ def search_orders():
     order_date = request.form['order_date']
     order_comments = request.form['order_comments']
     try:
-        query = f"""SELECT * FROM `Orders` 
-        WHERE (`customerID` = '{customer_id}' OR '{customer_id}' = '') 
-        AND (`totalPrice` = '{total_price}' OR '{total_price}' = '') 
-        AND (`orderDate` = '{order_date}' OR '{order_date}' = '') 
-        AND (`orderComments` = '{order_comments}' OR '{order_comments}' = '');"""
+        query = f"""SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
+            FROM `Orders` o 
+            INNER JOIN `Customers` c 
+            ON o.customerID = c.customerID 
+            WHERE (c.`customerID` = '{customer_id}' OR '{customer_id}' = '') 
+            AND (o.`totalPrice` = '{total_price}' OR '{total_price}' = '') 
+            AND (o.`orderDate` = '{order_date}' OR '{order_date}' = '') 
+            AND (o.`orderComments` = '{order_comments}' OR '{order_comments}' = '');"""
 
         result = execute_query(db_connection, query).fetchall()
 
@@ -255,14 +261,23 @@ ORDER ITEMS
 def order_items():
     db_connection = connect_to_database()
 
-    query = "SELECT * FROM `OrderItems`;"
+    query = """SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice
+        FROM `OrderItems` oi
+        INNER JOIN
+        (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+        FROM `Orders` ord
+        INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+        ) o ON oi.orderID = o.orderID
+        INNER JOIN `Products` p ON oi.productID = p.productID;"""
     result = execute_query(db_connection, query).fetchall()
 
     # queries for Products and Orders when adding new OrderItem
     products_query = "SELECT `productID`, `productName` FROM `Products`;"
     products_result = execute_query(db_connection, products_query).fetchall()
 
-    orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+    orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+        FROM `Orders` o
+        INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
     orders_result = execute_query(db_connection, orders_query).fetchall()
 
     return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
@@ -298,11 +313,18 @@ def search_order_items():
     order_item_price = request.form['order_item_price']
 
     try:
-        query = f"""SELECT * FROM `OrderItems` 
-        WHERE (`orderID` = '{order_id}' OR '{order_id}' = '') 
-        AND (`productID` = '{product_id}' OR '{product_id}' = '') 
-        AND (`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
-        AND (`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
+        query = f"""SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice, oi.orderID
+            FROM `OrderItems` oi
+            INNER JOIN
+            (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+            FROM `Orders` ord
+            INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+            ) o ON oi.orderID = o.orderID
+            INNER JOIN `Products` p ON oi.productID = p.productID
+            WHERE (oi.`orderID` = '{order_id}' OR '{order_id}' = '') 
+            AND (oi.`productID` = '{product_id}' OR '{product_id}' = '') 
+            AND (oi.`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
+            AND (oi.`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
         
         result = execute_query(db_connection, query).fetchall()
 
@@ -310,7 +332,9 @@ def search_order_items():
         products_query = "SELECT `productID`, `productName` FROM `Products`;"
         products_result = execute_query(db_connection, products_query).fetchall()
 
-        orders_query = "SELECT `orderID` FROM `Orders`;"
+        orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+            FROM `Orders` o
+            INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
         orders_result = execute_query(db_connection, orders_query).fetchall()
 
         return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
@@ -387,11 +411,19 @@ SHIPMENTS
 def shipments():
     db_connection = connect_to_database()
 
-    query = "SELECT * FROM `Shipments`;"
+    query = """SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
+        FROM `Shipments` s
+        INNER JOIN 
+        (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+        FROM `Orders` ord
+        INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+        ) o ON s.orderID = o.orderID;"""
     result = execute_query(db_connection, query).fetchall()
 
     # query for Orders when adding new Shipment
-    orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+    orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+        FROM `Orders` o
+        INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
     orders_result = execute_query(db_connection, orders_query).fetchall()
 
     return render_template('shipments.html', shipments = result, orders = orders_result)
@@ -434,15 +466,23 @@ def search_shipments():
     date_delivered = request.form['date_delivered']
 
     try:
-        query = f"""SELECT * FROM `Shipments` 
-        WHERE (`orderID` = '{order_id}' OR '{order_id}' = '') 
-        AND (`trackingNumber` = '{tracking_number}' OR '{tracking_number}' = '') 
-        AND (`dateShipped` = '{date_shipped}' OR '{date_shipped}' = '') 
-        AND (`dateDelivered` = '{date_delivered}' OR '{date_delivered}' = '');"""
+        query = f"""SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
+            FROM `Shipments` s
+            INNER JOIN 
+            (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+            FROM `Orders` ord
+            INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+            ) o ON s.orderID = o.orderID
+            WHERE (s.`orderID` = '{order_id}' OR '{order_id}' = '') 
+            AND (s.`trackingNumber` = '{tracking_number}' OR '{tracking_number}' = '') 
+            AND (s.`dateShipped` = '{date_shipped}' OR '{date_shipped}' = '') 
+            AND (s.`dateDelivered` = '{date_delivered}' OR '{date_delivered}' = '');"""
         
         result = execute_query(db_connection, query).fetchall()
 
-        orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+        orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+            FROM `Orders` o
+            INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
         orders_result = execute_query(db_connection, orders_query).fetchall()
         
         return render_template('shipments.html', shipments = result, orders = orders_result)
@@ -720,13 +760,16 @@ PRODUCTSCATEGORIES
 def products_categories():
     db_connection = connect_to_database()
 
-    query = "SELECT * FROM `ProductsCategories`;"
+    query = """SELECT pc.productID, pc.categoryID, p.productName, c.categoryName
+        FROM `ProductsCategories` pc
+        INNER JOIN `Products` p ON pc.productID = p.productID
+        INNER JOIN `Categories` c ON pc.categoryID = c.categoryID;"""
     result = execute_query(db_connection, query).fetchall()
 
     # queries and results for adding new productcategory by name in drop down list
-    products_query = "SELECT * FROM `Products`;"
+    products_query = "SELECT `productID`, `productName` FROM `Products`;"
     products_result = execute_query(db_connection, products_query)
-    categories_query = "SELECT * FROM `Categories`;"
+    categories_query = "SELECT `categoryID`, `categoryName` FROM `Categories`;"
     categories_result = execute_query(db_connection, categories_query)
 
     return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
@@ -758,16 +801,19 @@ def search_products_categories():
     category_id = request.form['category']
 
     try:
-        query = f"""SELECT * FROM `ProductsCategories` 
-        WHERE (`productID` = '{product_id}' OR '{product_id}' = '') 
-        AND (`categoryID` = '{category_id}' OR '{category_id}' = '');"""
+        query = f"""SELECT pc.productID, pc.categoryID, p.productName, c.categoryName
+            FROM `ProductsCategories` pc
+            INNER JOIN `Products` p ON pc.productID = p.productID
+            INNER JOIN `Categories` c ON pc.categoryID = c.categoryID 
+            WHERE (pc.`productID` = '{product_id}' OR '{product_id}' = '') 
+            AND (pc.`categoryID` = '{category_id}' OR '{category_id}' = '');"""
 
         result = execute_query(db_connection, query).fetchall()
         
         # queries and results for adding new productcategory by name in drop down list
-        products_query = "SELECT * FROM `Products`;"
+        products_query = "SELECT `productID`, `productName` FROM `Products`;"
         products_result = execute_query(db_connection, products_query)
-        categories_query = "SELECT * FROM `Categories`;"
+        categories_query = "SELECT `categoryID`, `categoryName` FROM `Categories`;"
         categories_result = execute_query(db_connection, categories_query)
 
         return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
