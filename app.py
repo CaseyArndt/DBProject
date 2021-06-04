@@ -801,7 +801,7 @@ def search_products_categories():
     category_id = request.form['category']
 
     try:
-        query = f"""SELECT pc.productID, pc.categoryIDp.productName, c.categoryName
+        query = f"""SELECT pc.productID, pc.categoryID, p.productName, c.categoryName
             FROM `ProductsCategories` pc
             INNER JOIN `Products` p ON pc.productID = p.productID
             INNER JOIN `Categories` c ON pc.categoryID = c.categoryID 
