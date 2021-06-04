@@ -40,6 +40,11 @@ FROM `Orders` o
 INNER JOIN `Customers` c 
 ON o.customerID = c. customerID;
 
+-- SELECT Query for Order Details in Shipments & OrderItems dropdowns
+SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+FROM `Orders` o
+INNER JOIN `Customers` c ON o.customerID = c.customerID;
+
 -- Add New Order
 INSERT INTO Orders(customerID, totalPrice, orderDate, orderComments)
 VALUES (:customerID_selcted_from_dropdown_box, :totalPriceInput, :orderDateInput, :orderCommentsInput);
@@ -61,7 +66,7 @@ DELETE FROM Orders WHERE orderID = :orderID_selected_from_orders_page;
 -- Show all OrderItems in Database under "Manage Order Items"
 SELECT * FROM OrderItems;
 
--- SELECT Query with Order Details and Product Name
+-- SELECT Query with Order Details and Product Name to display in table
 SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice
 FROM `OrderItems` oi
 INNER JOIN

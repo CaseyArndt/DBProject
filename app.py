@@ -409,13 +409,13 @@ SHIPMENTS
 def shipments():
     db_connection = connect_to_database()
 
-    query = """SELECT s.shipmentID, 
-        CONCAT(o.orderID, "; ", o.orderDate, "; ", o.totalPrice) as `orderDetails`,
-        s.trackingNumber, 
-        s.dateShipped,
-        s.dateDelivered
+    query = """SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
         FROM `Shipments` s
-        INNER JOIN `Orders` o ON s.orderID = o.orderID;"""
+        INNER JOIN 
+        (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+        FROM `Orders` ord
+        INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+        ) o ON s.orderID = o.orderID;"""
     result = execute_query(db_connection, query).fetchall()
 
     # query for Orders when adding new Shipment
