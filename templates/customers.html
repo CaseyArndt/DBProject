@@ -66,20 +66,22 @@
             </tr>
         </thead>
         <tbody>
+            {% for customer in customers %}
             <tr>
-                <td scope="row">{{ customers.firstName }}</td>
-                <td scope="row">{{ customers.lastName }}</td>
-                <td scope="row">{{ customers.email }}</td>
-                <td scope="row">{{ customers.phoneNumber }}</td>
-                <td scope="row">{{ customers.streetAddress }}</td>
-                <td scope="row">{{ customers.city }}</td>
-                <td scope="row">{{ customers.state }}</td>
-                <td scope="row">{{ customers.zipCode }}</td>
+                <td scope="row">{{ customer[1] }}</td>
+                <td scope="row">{{ customer[2] }}</td>
+                <td scope="row">{{ customer[3] }}</td>
+                <td scope="row">{{ customer[4] }}</td>
+                <td scope="row">{{ customer[5] }}</td>
+                <td scope="row">{{ customer[6] }}</td>
+                <td scope="row">{{ customer[7] }}</td>
+                <td scope="row">{{ customer[8] }}</td>
                 <td scope="row">
-                    <a href="/updatecustomer/{{customers.customerID}}"><button type="button" class="btn btn-primary">Update</button></a>
-                    <a href="/deletecustomer/{{customers.customerID}}"><button type="button" class="btn btn-danger"> Delete </button></a>
+                    <a href="/updatecustomer/{{customer[0]}}"><button type="button" class="btn btn-primary">Update</button></a>
+                    <a href="/deletecustomer/{{customer[0]}}"><button type="button" class="btn btn-danger"> Delete </button></a>
                 </td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
     {% endif %}
