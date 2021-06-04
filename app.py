@@ -311,7 +311,7 @@ def search_order_items():
     order_item_price = request.form['order_item_price']
 
     try:
-        query = f"""SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice
+        query = f"""SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice, oi.orderID
         FROM `OrderItems` oi
         INNER JOIN
         (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
@@ -319,7 +319,7 @@ def search_order_items():
         INNER JOIN `Customers` c ON ord.customerID = c.customerID 
         ) o ON oi.orderID = o.orderID
         INNER JOIN `Products` p ON oi.productID = p.productID;
-        WHERE (o.`orderID` = '{order_id}' OR '{order_id}' = '') 
+        WHERE (oi.`orderID` = '{order_id}' OR '{order_id}' = '') 
         AND (oi.`productID` = '{product_id}' OR '{product_id}' = '') 
         AND (oi.`orderItemQuantity` = '{order_item_quantity}' OR '{order_item_quantity}' = '') 
         AND (oi.`orderItemPrice` = '{order_item_price}' OR '{order_item_price}' = '');"""
