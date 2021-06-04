@@ -16,13 +16,14 @@
                     {% for customer in customers %}
                     <option value="{{customer[0]}}">{{customer[1]}} {{customer[2]}} {{customer[3]}}</option>
                     {% endfor %}
+                    <option value="">NULL</option>
                 </select>
             </div>
             <div class="col">
                 <input type="text" class="form-control" name="total_price" id ="total_price" placeholder="Total Order Price"> 
             </div>
             <div class="col">
-                <input type="text" class="form-control" name="order_date" id ="order_date" placeholder="Order Date">
+                <input type="text" class="form-control" name="order_date" id ="order_date" placeholder="Order Date: In the format YYYY-MM-DD">
             </div>
             <div class="col">
                 <input type="text" class="form-control" name="order_comments" id ="order_comments" placeholder="Order Comments">

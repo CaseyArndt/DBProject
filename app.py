@@ -108,18 +108,28 @@ def update_customer(id):
 
 @app.route('/updatedcustomer/<int:id>', methods=['POST', 'GET'])
 def update_customer_process(id):
-    db_connection = connect_to_database()
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    email = request.form['email']
-    phone_number = request.form['phone_number']
-    street_address = request.form['street_address']
-    city = request.form['city']
-    state = request.form['state']
-    zip_code = request.form['zip_code']
-    query = f"UPDATE `Customers` SET `firstName` = '{first_name}', `lastName` = '{last_name}', `email` = '{email}', `phoneNumber` = '{phone_number}', `streetAddress` = '{street_address}', `city` = '{city}', `state` = '{state}', `zipCode` = '{zip_code}' WHERE `customerID` = {id};"
-    execute_query(db_connection, query)
-    return redirect('/customers')
+    try:
+        db_connection = connect_to_database()
+        first_name = request.form['first_name'] or None
+        last_name = request.form['last_name'] or None
+        email = request.form['email'] or None
+        phone_number = request.form['phone_number'] or None
+        street_address = request.form['street_address'] or None
+        city = request.form['city'] or None
+        state = request.form['state'] or None
+        zip_code = request.form['zip_code'] or None
+        check_null = [first_name, last_name, email, phone_number, street_address, city, state, zip_code]
+
+        for i in check_null:
+            if i is None:
+                raise Exception
+
+        query = f"UPDATE `Customers` SET `firstName` = '{first_name}', `lastName` = '{last_name}', `email` = '{email}', `phoneNumber` = '{phone_number}', `streetAddress` = '{street_address}', `city` = '{city}', `state` = '{state}', `zipCode` = '{zip_code}' WHERE `customerID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/customers')
+
+    except:
+        return "There was an issue adding the Customer. Please make sure text fields are not empty."
 
     
 """
@@ -145,10 +155,11 @@ def add_order():
         
     customer_id = request.form['customer'] or None
     total_price = request.form['total_price'] or None
-    order_date = request.form['order_date'] or None
+    x = request.form['order_date'] or None
     order_comments = request.form['order_comments'] or None
 
     try:
+        order_date = datetime.datetime.strptime(x, "%Y-%m-%d")
         query = "INSERT INTO `Orders` (`customerID`, `totalPrice`, `orderDate`, `orderComments`) VALUES (%s, %s, %s, %s)"
         data = (customer_id, total_price, order_date, order_comments)
         execute_query(db_connection, query, data)
@@ -156,7 +167,7 @@ def add_order():
         return redirect('/orders')
 
     except:
-        return "There was an issue adding the Order. Please make sure text fields aren't empty."
+        return "There was an issue adding the Order. Please make sure text fields are filled out properly."
 
 
 @app.route('/searchorders', methods=['POST'])
@@ -183,7 +194,6 @@ def search_orders():
 
     except:
         return "There was an issue searching Orders."
-
 
 @app.route('/deleteorder/<int:id>')
 def delete_order(id):
@@ -217,18 +227,19 @@ def update_order(id):
 def update_order_process(id):
     try:
         db_connection = connect_to_database()
-        customer_id = request.form['customer']
-        if customer_id == "":
-                customer_id = None
-        total_price = request.form['total_price']
-        order_date = request.form['order_date']
-        # date validation from https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
-        date_format = "%Y-%m-%d"
-        try:
-            datetime.datetime.strptime(order_date, date_format)
-        except:
-            raise Exception
-        order_comments = request.form['order_comments']
+        customer_id = request.form['customer'] or None
+        if customer_id is None:
+            customer_id = 'NULL'
+        total_price = request.form['total_price'] or None
+        x = request.form['order_date'] or None
+        order_date = datetime.datetime.strptime(x, "%Y-%m-%d")
+        order_comments = request.form['order_comments'] or None
+        check_null = [total_price, order_date]
+
+        for i in check_null:
+            if i is None:
+                raise Exception
+
         query = f"UPDATE `Orders` SET `customerID` = {customer_id}, `totalPrice` = {total_price}, `orderDate` = '{order_date}', `orderComments` = '{order_comments}' WHERE `orderID` = {id};"
         execute_query(db_connection, query)
         return redirect('/orders')
@@ -299,7 +310,7 @@ def search_order_items():
         products_query = "SELECT `productID`, `productName` FROM `Products`;"
         products_result = execute_query(db_connection, products_query).fetchall()
 
-        orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+        orders_query = "SELECT `orderID` FROM `Orders`;"
         orders_result = execute_query(db_connection, orders_query).fetchall()
 
         return render_template('orderitems.html', order_items = result, products = products_result, orders = orders_result)
@@ -346,16 +357,25 @@ def update_orderItems(id):
 
 @app.route('/updatedorderitem/<int:id>', methods=['POST', 'GET'])
 def update_orderItems_process(id):
-    db_connection = connect_to_database()
+    try:
+        db_connection = connect_to_database()
 
-    order_id = request.form['order']
-    product_id = request.form['product']
-    item_quantity = request.form['item_quantity']
-    item_price = request.form['item_price']
+        order_id = request.form['order'] or None
+        product_id = request.form['product'] or None
+        item_quantity = request.form['item_quantity'] or None
+        item_price = request.form['item_price'] or None
+
+        check_null = [item_quantity, item_price]
+
+        for i in check_null:
+            if i is None:
+                raise Exception
     
-    query = f"UPDATE `OrderItems` SET `orderID` = {order_id}, `productID` = {product_id}, `orderItemQuantity` = {item_quantity}, `orderItemPrice` = {item_price} WHERE `orderItemID` = {id};"
-    execute_query(db_connection, query)
-    return redirect('/orderitems')
+        query = f"UPDATE `OrderItems` SET `orderID` = {order_id}, `productID` = {product_id}, `orderItemQuantity` = {item_quantity}, `orderItemPrice` = {item_price} WHERE `orderItemID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/orderitems')
+    except:
+        return "There was an error updating this customer. Please make sure all text fields are filled out properly."
 
 
 
@@ -383,10 +403,17 @@ def add_shipment():
     
     order_id = request.form['order_id'] or None
     tracking_number = request.form['tracking_number'] or None
-    date_shipped = request.form['date_shipped'] or None
-    date_delivered = request.form['date_delivered'] or None
+    x = request.form['date_shipped'] or None
+    y = request.form['date_delivered'] or None
+
+    
 
     try:
+        if y is None:
+            date_delivered = None
+        else:
+            date_delivered = datetime.datetime.strptime(y, "%Y-%m-%d")
+        date_shipped = datetime.datetime.strptime(x, "%Y-%m-%d")
         query = "INSERT INTO `Shipments` (`orderID`, `trackingNumber`, `dateShipped`, `dateDelivered`) VALUES (%s, %s, %s, %s)"
         data = (order_id, tracking_number, date_shipped, date_delivered)
         execute_query(db_connection, query, data)
@@ -394,7 +421,7 @@ def add_shipment():
         return redirect('/shipments')
 
     except:
-        return "There was an issue adding the Shipment. Please make sure text fields aren't empty."
+        return "There was an issue adding the Shipment. Please make sure the fields are filled out properly."
 
 
 @app.route('/searchshipments', methods=['POST'])
@@ -455,26 +482,18 @@ def update_shipment(id):
 def update_shipment_process(id):
     try:
         db_connection = connect_to_database()
-        order_id = request.form['order']
-        tracking_number = request.form['tracking_number']
-        date_shipped = request.form['date_shipped']
-        date_delivered = request.form['date_delivered']
-        # date validation from https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
-        date_format = "%Y-%m-%d"
-        try:
-            datetime.datetime.strptime(date_shipped, date_format)
-        except:
-            raise Exception
+        order_id = request.form['order'] or None
+        tracking_number = request.form['tracking_number'] or None
+        x = request.form['date_shipped'] or None
+        y = request.form['date_delivered'] or None
 
-        try:
-            if date_delivered == "None":
-                pass
-            else:
-                datetime.datetime.strptime(date_delivered, date_format)
-        except:
-            raise Exception
+        if y is None:
+            date_delivered = None
+        else:
+            date_delivered = datetime.datetime.strptime(y, "%Y-%m-%d")
+        date_shipped = datetime.datetime.strptime(x, "%Y-%m-%d")
 
-        check_null = [order_id, tracking_number, date_shipped]
+        check_null = [order_id, date_shipped]
         for i in check_null:
             if not i:
                 raise Exception
@@ -679,8 +698,8 @@ def update_category(id):
 def update_category_process(id):
     try:
         db_connection = connect_to_database()
-        category_name = request.form['category_name']
-        category_description = request.form['category_description']
+        category_name = request.form['category_name'] or None
+        category_description = request.form['category_description'] or None
 
         if not category_name:
             raise Exception
@@ -770,15 +789,16 @@ def delete_product_category():
         
         return redirect('/productscategories')
     except:
-        return "There was an error deleting this ProductCategory."
+        return "There was an error deleting this Category."
 
 
-@app.route('/updateproductcategory/<string:id_string>', methods=['POST', 'GET'])
-def update_product_category(id_string):
+@app.route('/updateproductcategory/', methods=['POST', 'GET'])
+def update_product_category():
     db_connection = connect_to_database()
-    id_string_split = id_string.split('-', 1)
-    product_id = int(id_string_split[0])
-    category_id = int(id_string_split[1])
+
+    product_id = request.args.get('productID', None)
+    category_id = request.args.get('categoryID', None)
+
     query = f"SELECT * FROM `ProductsCategories` WHERE `productID` = {product_id} AND `categoryID` = {category_id};"
     result = execute_query(db_connection, query).fetchall()
 
@@ -790,21 +810,19 @@ def update_product_category(id_string):
     return render_template('updateproductcategory.html', product_category = result, products = products_result, categories = categories_result)
 
 
-@app.route('/updatedproductcategory/<string:id_string>', methods=['POST', 'GET'])
-def update_productCategory_process(id_string):
-    try:
-        db_connection = connect_to_database()
-        id_string_split = id_string.split('-', 1)
-        product_id = int(id_string_split[0])
-        category_id = int(id_string_split[1])
-        product_id_new = request.form['product']
-        category_id_new = request.form['category']
+@app.route('/updatedproductcategory/', methods=['POST', 'GET'])
+def update_productCategory_process():
+    db_connection = connect_to_database()
 
-        query = f"UPDATE ProductsCategories SET productID = {product_id_new}, categoryID = {category_id_new} WHERE productID = {product_id} AND categoryID = {category_id};"
-        execute_query(db_connection, query)
-        return redirect('/productscategories')
-    except:
-        return "You have entered an invalid value. Please make sure all fields are filled out properly."
+    product_id = request.args.get('productID', None)
+    category_id = request.args.get('categoryID', None)
+
+    product_id_new = request.form['product'] or None
+    category_id_new = request.form['category'] or None
+
+    query = f"UPDATE `ProductsCategories` SET `productID` = {product_id_new}, `categoryID` = {category_id_new} WHERE `productID` = {product_id} AND `categoryID` = {category_id};"
+    execute_query(db_connection, query)
+    return redirect('/productscategories')
 
 
 if __name__ == "__main__":
