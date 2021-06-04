@@ -141,9 +141,9 @@ def orders():
     db_connection = connect_to_database()
  
     query = """SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
-            FROM `Orders` o 
-            INNER JOIN `Customers` c 
-            ON o.customerID = c. customerID;"""    
+    FROM `Orders` o 
+    INNER JOIN `Customers` c 
+    ON o.customerID = c. customerID;"""    
     result = execute_query(db_connection, query).fetchall()
 
     customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
@@ -182,7 +182,10 @@ def search_orders():
     order_date = request.form['order_date']
     order_comments = request.form['order_comments']
     try:
-        query = f"""SELECT * FROM `Orders` 
+        query = f"""SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
+        FROM `Orders` o 
+        INNER JOIN `Customers` c 
+        ON o.customerID = c. customerID 
         WHERE (`customerID` = '{customer_id}' OR '{customer_id}' = '') 
         AND (`totalPrice` = '{total_price}' OR '{total_price}' = '') 
         AND (`orderDate` = '{order_date}' OR '{order_date}' = '') 
