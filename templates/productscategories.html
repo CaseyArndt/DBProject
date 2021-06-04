@@ -14,7 +14,7 @@
                 <select class="form-select" name="product" id ="product">
                     <option selected value="">Choose Product</option>
                     {% for product in products %}
-                    <option value="{{product.`productID`}}">{{product.productName}}</option>
+                    <option value="{{product.productID}}">{{product.productName}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -22,7 +22,7 @@
                 <select class="form-select" name="category" id ="category">
                     <option selected value="">Choose Category</option>
                     {% for category in categories %}
-                    <option value="{{category.`categoryID`}}">{{category.categoryName}}</option>
+                    <option value="{{category.categoryID}}">{{category.categoryName}}</option>
                     {% endfor %}
                 </select>
             </div>
