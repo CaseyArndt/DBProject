@@ -757,7 +757,10 @@ PRODUCTSCATEGORIES
 def products_categories():
     db_connection = connect_to_database()
 
-    query = "SELECT * FROM `ProductsCategories`;"
+    query = """SELECT p.productName, c.categoryName
+        FROM `ProductsCategories` pc
+        INNER JOIN `Products` p ON pc.productID = p.productID
+        INNER JOIN `Categories` c ON pc.categoryID = c.categoryID;"""
     result = execute_query(db_connection, query).fetchall()
 
     # queries and results for adding new productcategory by name in drop down list
@@ -795,9 +798,12 @@ def search_products_categories():
     category_id = request.form['category']
 
     try:
-        query = f"""SELECT * FROM `ProductsCategories` 
-        WHERE (`productID` = '{product_id}' OR '{product_id}' = '') 
-        AND (`categoryID` = '{category_id}' OR '{category_id}' = '');"""
+        query = f"""SELECT p.productName, c.categoryName, pc.productID, pc.categoryID
+            FROM `ProductsCategories` pc
+            INNER JOIN `Products` p ON pc.productID = p.productID
+            INNER JOIN `Categories` c ON pc.categoryID = c.categoryID;` 
+            WHERE (pc.`productID` = '{product_id}' OR '{product_id}' = '') 
+            AND (pc.`categoryID` = '{category_id}' OR '{category_id}' = '');"""
 
         result = execute_query(db_connection, query).fetchall()
         
