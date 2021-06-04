@@ -478,7 +478,9 @@ def search_shipments():
         
         result = execute_query(db_connection, query).fetchall()
 
-        orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+        orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+            FROM `Orders` o
+            INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
         orders_result = execute_query(db_connection, orders_query).fetchall()
         
         return render_template('shipments.html', shipments = result, orders = orders_result)
