@@ -804,16 +804,16 @@ def search_products_categories():
         query = f"""SELECT p.productName, c.categoryName, pc.productID, pc.categoryID
             FROM `ProductsCategories` pc
             INNER JOIN `Products` p ON pc.productID = p.productID
-            INNER JOIN `Categories` c ON pc.categoryID = c.categoryID;` 
+            INNER JOIN `Categories` c ON pc.categoryID = c.categoryID 
             WHERE (pc.`productID` = '{product_id}' OR '{product_id}' = '') 
             AND (pc.`categoryID` = '{category_id}' OR '{category_id}' = '');"""
 
         result = execute_query(db_connection, query).fetchall()
         
         # queries and results for adding new productcategory by name in drop down list
-        products_query = "SELECT * FROM `Products`;"
+        products_query = "SELECT `productID`, `productName` FROM `Products`;"
         products_result = execute_query(db_connection, products_query)
-        categories_query = "SELECT * FROM `Categories`;"
+        categories_query = "SELECT `categoryID`, `categoryName` FROM `Categories`;"
         categories_result = execute_query(db_connection, categories_query)
 
         return render_template('productscategories.html', products_categories = result, products = products_result, categories = categories_result)
