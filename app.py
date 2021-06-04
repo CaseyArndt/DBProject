@@ -464,11 +464,17 @@ def search_shipments():
     date_delivered = request.form['date_delivered']
 
     try:
-        query = f"""SELECT * FROM `Shipments` 
-        WHERE (`orderID` = '{order_id}' OR '{order_id}' = '') 
-        AND (`trackingNumber` = '{tracking_number}' OR '{tracking_number}' = '') 
-        AND (`dateShipped` = '{date_shipped}' OR '{date_shipped}' = '') 
-        AND (`dateDelivered` = '{date_delivered}' OR '{date_delivered}' = '');"""
+        query = f"""SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
+            FROM `Shipments` s
+            INNER JOIN 
+            (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+            FROM `Orders` ord
+            INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+            ) o ON s.orderID = o.orderID` 
+            WHERE (s.`orderID` = '{order_id}' OR '{order_id}' = '') 
+            AND (s.`trackingNumber` = '{tracking_number}' OR '{tracking_number}' = '') 
+            AND (s.`dateShipped` = '{date_shipped}' OR '{date_shipped}' = '') 
+            AND (s.`dateDelivered` = '{date_delivered}' OR '{date_delivered}' = '');"""
         
         result = execute_query(db_connection, query).fetchall()
 
