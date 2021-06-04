@@ -108,18 +108,28 @@ def update_customer(id):
 
 @app.route('/updatedcustomer/<int:id>', methods=['POST', 'GET'])
 def update_customer_process(id):
-    db_connection = connect_to_database()
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    email = request.form['email']
-    phone_number = request.form['phone_number']
-    street_address = request.form['street_address']
-    city = request.form['city']
-    state = request.form['state']
-    zip_code = request.form['zip_code']
-    query = f"UPDATE `Customers` SET `firstName` = '{first_name}', `lastName` = '{last_name}', `email` = '{email}', `phoneNumber` = '{phone_number}', `streetAddress` = '{street_address}', `city` = '{city}', `state` = '{state}', `zipCode` = '{zip_code}' WHERE `customerID` = {id};"
-    execute_query(db_connection, query)
-    return redirect('/customers')
+    try:
+        db_connection = connect_to_database()
+        first_name = request.form['first_name'] or None
+        last_name = request.form['last_name'] or None
+        email = request.form['email'] or None
+        phone_number = request.form['phone_number'] or None
+        street_address = request.form['street_address'] or None
+        city = request.form['city'] or None
+        state = request.form['state'] or None
+        zip_code = request.form['zip_code'] or None
+        check_null = [first_name, last_name, email, phone_number, street_address, city, state, zip_code]
+
+        for i in check_null:
+            if i is None:
+                raise Exception
+
+        query = f"UPDATE `Customers` SET `firstName` = '{first_name}', `lastName` = '{last_name}', `email` = '{email}', `phoneNumber` = '{phone_number}', `streetAddress` = '{street_address}', `city` = '{city}', `state` = '{state}', `zipCode` = '{zip_code}' WHERE `customerID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/customers')
+
+    except:
+        return "There was an issue adding the Customer. Please make sure text fields are not empty."
 
     
 """
@@ -217,13 +227,19 @@ def update_order(id):
 def update_order_process(id):
     try:
         db_connection = connect_to_database()
-        customer_id = request.form['customer']
-        if customer_id == "":
-                customer_id = None
-        total_price = request.form['total_price']
-        x = request.form['order_date']
+        customer_id = request.form['customer'] or None
+        if customer_id is None:
+            customer_id = 'NULL'
+        total_price = request.form['total_price'] or None
+        x = request.form['order_date'] or None
         order_date = datetime.datetime.strptime(x, "%Y-%m-%d")
-        order_comments = request.form['order_comments']
+        order_comments = request.form['order_comments'] or None
+        check_null = [total_price, order_date]
+
+        for i in check_null:
+            if i is None:
+                raise Exception
+
         query = f"UPDATE `Orders` SET `customerID` = {customer_id}, `totalPrice` = {total_price}, `orderDate` = '{order_date}', `orderComments` = '{order_comments}' WHERE `orderID` = {id};"
         execute_query(db_connection, query)
         return redirect('/orders')
@@ -341,16 +357,25 @@ def update_orderItems(id):
 
 @app.route('/updatedorderitem/<int:id>', methods=['POST', 'GET'])
 def update_orderItems_process(id):
-    db_connection = connect_to_database()
+    try:
+        db_connection = connect_to_database()
 
-    order_id = request.form['order']
-    product_id = request.form['product']
-    item_quantity = request.form['item_quantity']
-    item_price = request.form['item_price']
+        order_id = request.form['order'] or None
+        product_id = request.form['product'] or None
+        item_quantity = request.form['item_quantity'] or None
+        item_price = request.form['item_price'] or None
+
+        check_null = [item_quantity, item_price]
+
+        for i in check_null:
+            if i is None:
+                raise Exception
     
-    query = f"UPDATE `OrderItems` SET `orderID` = {order_id}, `productID` = {product_id}, `orderItemQuantity` = {item_quantity}, `orderItemPrice` = {item_price} WHERE `orderItemID` = {id};"
-    execute_query(db_connection, query)
-    return redirect('/orderitems')
+        query = f"UPDATE `OrderItems` SET `orderID` = {order_id}, `productID` = {product_id}, `orderItemQuantity` = {item_quantity}, `orderItemPrice` = {item_price} WHERE `orderItemID` = {id};"
+        execute_query(db_connection, query)
+        return redirect('/orderitems')
+    except:
+        return "There was an error updating this customer. Please make sure all text fields are filled out properly."
 
 
 
@@ -673,8 +698,8 @@ def update_category(id):
 def update_category_process(id):
     try:
         db_connection = connect_to_database()
-        category_name = request.form['category_name']
-        category_description = request.form['category_description']
+        category_name = request.form['category_name'] or None
+        category_description = request.form['category_description'] or None
 
         if not category_name:
             raise Exception
