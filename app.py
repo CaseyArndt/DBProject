@@ -140,7 +140,10 @@ ORDERS
 def orders():
     db_connection = connect_to_database()
  
-    query = "SELECT * FROM `Orders`;"
+    query = """SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
+            FROM `Orders` o 
+            INNER JOIN `Customers` c 
+            ON o.customerID = c. customerID;"""    
     result = execute_query(db_connection, query).fetchall()
 
     customers_query = "SELECT `customerID`, `firstName`, `lastName`, `email` FROM `Customers`;"
