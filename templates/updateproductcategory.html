@@ -16,7 +16,7 @@
                     <option value="{{product_category[0][0]}}" selected>{{product_category[0][0]}}</option>
                     {% for product in products %}
                         {% if product[0] != product_category[0][0] %}
-                        <option value="{{product[0]}}">{{product[0]}}</option>
+                        <option value="{{product[0]}}">{{product[1]}}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -27,7 +27,7 @@
                     <option value="{{product_category[0][1]}}" selected>{{product_category[0][1]}}</option>
                     {% for category in categories %}
                         {% if category[0] != product_category[0][1] %}
-                        <option value="{{category[0]}}">{{category[0]}}</option>
+                        <option value="{{category[0]}}">{{category[1]}}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
