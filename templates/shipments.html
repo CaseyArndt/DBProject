@@ -15,7 +15,7 @@
                     <select class="form-select" name="order_id" id ="order">
                         <option selected value="">Choose Order</option>
                         {% for order in orders %}
-                        <option value="{{order[0]}}">{{order[0]}}</option>
+                        <option value="{{order[0]}}">{{order[1]}}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -45,7 +45,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Order ID</th>
+                <th scope="col">Order Details</th>
                 <th scope="col">Tracking Number</th>
                 <th scope="col">Date Shipped</th>
                 <th scope="col">Date Delivered</th>

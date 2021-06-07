@@ -43,16 +43,16 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Product ID</th>
-                <th scope="col">Category ID</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Category Name</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for product_category in products_categories %}
             <tr>
-                <td scope="row">{{ product_category[0] }}</td>
-                <td scope="row">{{ product_category[1] }}</td>
+                <td scope="row">{{ product_category[2] }}</td>
+                <td scope="row">{{ product_category[3] }}</td>
                 <td scope="row">
                     <a href="/updateproductcategory/?productID={{product_category[0]}}&categoryID={{product_category[1]}}"><button type="button" class="btn btn-primary">Update</button></a>
                     <a href="/deleteproductcategory?productID={{product_category[0]}}&categoryID={{product_category[1]}}"><button type="button" class="btn btn-danger">Delete</button></a>

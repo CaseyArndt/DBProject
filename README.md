@@ -7,7 +7,7 @@ OR (for testing)
 `python -m flask run -h 0.0.0.0 -p 8905 --reload`
 
 To connect to the DB:
-`mysql -u cs340_ONID -h classmysql.engr.oregonstate.edu -p
+`mysql -u cs340_ONID -h classmysql.engr.oregonstate.edu -p`
 `USE cs340_ONID`
 
 To upload SQL file:

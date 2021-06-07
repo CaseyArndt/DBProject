@@ -35,6 +35,16 @@ DELETE FROM Customers WHERE customerID = :customerID_selected_from_customers_pag
 -- Show all Orders in Database under "Manage Orders"
 SELECT * FROM Orders;
 
+SELECT o.orderID, c.email, o.totalPrice, o.orderDate, o.orderComments 
+FROM `Orders` o 
+INNER JOIN `Customers` c 
+ON o.customerID = c. customerID;
+
+-- SELECT Query for Order Details in Shipments & OrderItems dropdowns
+SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+FROM `Orders` o
+INNER JOIN `Customers` c ON o.customerID = c.customerID;
+
 -- Add New Order
 INSERT INTO Orders(customerID, totalPrice, orderDate, orderComments)
 VALUES (:customerID_selcted_from_dropdown_box, :totalPriceInput, :orderDateInput, :orderCommentsInput);
@@ -56,6 +66,17 @@ DELETE FROM Orders WHERE orderID = :orderID_selected_from_orders_page;
 -- Show all OrderItems in Database under "Manage Order Items"
 SELECT * FROM OrderItems;
 
+-- SELECT Query with Order Details and Product Name to display in table
+SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice
+FROM `OrderItems` oi
+INNER JOIN
+(SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+FROM `Orders` ord
+INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+) o ON oi.orderID = o.orderID
+INNER JOIN `Products` p ON oi.productID = p.productID;
+
+
 -- Add New OrderItem
 INSERT INTO OrderItems(orderID, productID, orderItemQuantity, orderItemPrice)
 VALUES (:orderID_selected_from_dropdown_box, :productID_selected_from_dropdown_box, :orderItemQuantityInput, :orderItemPriceInput);
@@ -76,6 +97,24 @@ DELETE FROM OrderItems WHERE orderItemID = :orderItemID_selected_from_orderItems
 -- Shipments
 -- Show all Shipments in Database under "Manage Shipments"
 SELECT * FROM Shipments;
+
+-- SELECT with only order details
+SELECT s.shipmentID, 
+CONCAT(o.orderID, "; ", o.orderDate, "; ", o.totalPrice) as `orderDetails`,
+s.trackingNumber, 
+s.dateShipped,
+s.dateDelivered
+FROM `Shipments` s
+INNER JOIN `Orders` o ON s.orderID = o.orderID;
+
+-- SELECT with customer details
+SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
+FROM `Shipments` s
+INNER JOIN 
+(SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+FROM `Orders` ord
+INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+) o ON s.orderID = o.orderID;
 
 -- Add New Shipment
 INSERT INTO Shipments(orderID, trackingNumber, dateShipped)
@@ -139,6 +178,12 @@ DELETE FROM Categories WHERE categoryID = :categoryID_selected_from_categories_p
 -- ProductsCategories
 -- Show all ProductsCategories in Database under "Manage ProductsCategories"
 SELECT * FROM ProductsCategories;
+
+SELECT p.productName, c.categoryName
+FROM `ProductsCategories` pc
+INNER JOIN `Products` p ON pc.productID = p.productID
+INNER JOIN `Categories` c ON pc.categoryID = c.categoryID;
+
 
 -- Add New ProductCategory
 INSERT INTO ProductsCategories(productID, categoryID)
