@@ -13,7 +13,7 @@
             <div class="col">
                 <label for="product">Product</label>
                 <select class="form-select" name="product" id ="product">
-                    <option value="{{product_category[0][0]}}" selected>{{product_category[0][0]}}</option>
+                    <option value="{{product_category[0][0]}}" selected>{{product[0][1]}}</option>
                     {% for product in products %}
                         {% if product[0] != product_category[0][0] %}
                         <option value="{{product[0]}}">{{product[1]}}</option>
@@ -24,7 +24,7 @@
             <div class="col">
                 <label for="category">Category</label>
                 <select class="form-select" name="category" id ="category">
-                    <option value="{{product_category[0][1]}}" selected>{{product_category[0][1]}}</option>
+                    <option value="{{product_category[0][1]}}" selected>{{category[0][1]}}</option>
                     {% for category in categories %}
                         {% if category[0] != product_category[0][1] %}
                         <option value="{{category[0]}}">{{category[1]}}</option>
