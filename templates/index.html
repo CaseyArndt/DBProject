@@ -6,39 +6,33 @@
 
 
 {% block body %}
-<div class="container">
-    <h1 class="text-center" style="padding: 10px;">Search Tables</h1>
-    <form>
-        <div class="row">
-            <div class="col-md-3">
-                <label for="table">Select Table</label>
-                <select class="form-control" id="table">
-                    <option selected>Choose...</option>
-                    <option value="Customers">Customers</option>
-                    <option value="Orders">Orders</option>
-                    <option value="OrderItems">Order Items</option>
-                    <option value="Shipments">Shipments</option>
-                    <option value="Products">Products</option>
-                    <option value="Categories">Categories</option>
-                    <option value="ProductsCategories">ProductsCategories</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="attribute">Select Attribute</label>
-                <select class="form-control" id="attribute">
-                    <option selected>Implement Later</option>
-                </select>
-            </div>
-            <div class="col">
-                <label for="query">Enter Query</label>
-                <input type="text" class="form-control" name="query" id="query" placeholder="Implement Later">
-            </div>
-
-        </div>
-        <br>
-        <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary">Submit Query</button>
-        </div>
-    </form>
+<div class="container" style="margin-top: 50px;">
+    <h1 class="text-center title" style="margin-top: 50px; margin-bottom: 50px">
+        Sally's Gardening Store Database Management
+    </h1>
+    <p>
+        This webpage is designed for employees to manage database entries. For all database
+        tables: new entries can be added, and existing entries can be searched, edited, or
+        deleted. To view or manage a table, click on the name of the table you wish to view
+        on the top banner. 
+    </p>
+    <p>
+        To add an entry to a table, enter the information in the given form, and click the
+        'Add' button. 
+    </p>
+    <p>
+        To search for entries in a table, enter the information to be searched in the form 
+        and click the 'Search' button. You can search for entries matching any amount of
+        columns as desired.
+    </p>
+    <p>
+        To update an entry, navigate to the entry in the table, click 'Update', and change 
+        the desired information in the form, and click the 'Submit' button.
+    </p>
+    <p>
+        To delete an entry in a table, navigate to the entry in the table, and click the 
+        'Delete' button.
+    </p>
+    
 </div>
 {% endblock %}
