@@ -13,7 +13,7 @@
             <div class="col">
                 <label for="order">Order Details</label>
                 <select class="form-select" name="order" id ="order">
-                    <option value="{{order_item[5]}}" selected>{{order_item[1]}</option>
+                    <option value="{{order_item[5]}}" selected>{{order_item[1]}}</option>
                     {% for order in orders %}
                     {% if order[0] != order_item[5] %}
                     <option value="{{order[0]}}">{{order[1]}}</option>
