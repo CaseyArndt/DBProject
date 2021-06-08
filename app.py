@@ -142,7 +142,7 @@ def orders():
  
     query = """SELECT o.orderID, CONCAT_WS(" ", c.firstName, c.lastName, c.email) as customer, o.totalPrice, o.orderDate, o.orderComments 
         FROM `Orders` o 
-        INNER JOIN `Customers` c 
+        LEFT JOIN `Customers` c 
         ON o.customerID = c. customerID;"""    
     result = execute_query(db_connection, query).fetchall()
 
