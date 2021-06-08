@@ -360,23 +360,24 @@ def delete_order_item(id):
 @app.route('/updateorderitem/<int:id>', methods=['POST', 'GET'])
 def update_orderItems(id):
     db_connection = connect_to_database()
-    query = f"SELECT * FROM `OrderItems` WHERE `orderItemID` = {id};"
-    result = execute_query(db_connection, query).fetchall()
-
-    find_order_id = f"SELECT `orderID` FROM `OrderItems` WHERE `orderItemID` = {id};"
-    find_order_result = execute_query(db_connection, find_order_id).fetchone()
-
-    find_product_id = f"SELECT `productID` FROM `OrderItems` WHERE `orderItemID` = {id};"
-    find_product_result = execute_query(db_connection, find_product_id).fetchone()
-    product_query = f"SELECT `productID`, `productName` FROM `Products` WHERE `productID` = '{find_product_result[0]}';"
-    product_result = execute_query(db_connection, product_query).fetchall()
+    query = f"""SELECT oi.orderItemID, o.orderDetails, p.productName, oi.orderItemQuantity, oi.orderItemPrice, oi.orderID, oi.productID
+            FROM `OrderItems` oi
+            INNER JOIN
+            (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+            FROM `Orders` ord
+            INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+            ) o ON oi.orderID = o.orderID
+            INNER JOIN `Products` p ON oi.productID = p.productID WHERE `orderItemID` = {id};"""
+    result = execute_query(db_connection, query).fetchone()
 
     products_query = "SELECT `productID`, `productName` FROM `Products`;"
     products_result = execute_query(db_connection, products_query).fetchall()
 
-    orders_query = "SELECT `orderID`, `customerID` FROM `Orders`;"
+    orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+        FROM `Orders` o
+        INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
     orders_result = execute_query(db_connection, orders_query).fetchall()
-    return render_template('updateorderitem.html', order_items = result, products = products_result, orders = orders_result, product = product_result, order = find_order_result)
+    return render_template('updateorderitem.html', order_item = result, products = products_result, orders = orders_result)
 
 
 @app.route('/updatedorderitem/<int:id>', methods=['POST', 'GET'])
