@@ -850,12 +850,18 @@ def update_product_category():
     product_id = request.args.get('productID', None)
     category_id = request.args.get('categoryID', None)
 
-    query = f"SELECT * FROM `ProductsCategories` WHERE `productID` = {product_id} AND `categoryID` = {category_id};"
+    query = f"""SELECT pc.productID, pc.categoryID, p.productName, c.categoryName
+            FROM `ProductsCategories` pc
+            INNER JOIN `Products` p ON pc.productID = p.productID
+            INNER JOIN `Categories` c ON pc.categoryID = c.categoryID 
+            WHERE (pc.`productID` = '{product_id}' OR '{product_id}' = '') 
+            AND (pc.`categoryID` = '{category_id}' OR '{category_id}' = '');"""
+
     result = execute_query(db_connection, query).fetchall()
 
-    products_query = "SELECT * FROM `Products`;"
+    products_query = "SELECT `productID`, `productName` FROM `Products`;"
     products_result = execute_query(db_connection, products_query)
-    categories_query = "SELECT * FROM `Categories`;"
+    categories_query = "SELECT `categoryID`, `categoryName` FROM `Categories`;"
     categories_result = execute_query(db_connection, categories_query)
 
     return render_template('updateproductcategory.html', product_category = result, products = products_result, categories = categories_result)
