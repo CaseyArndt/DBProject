@@ -507,13 +507,18 @@ def delete_shipment(id):
 @app.route('/updateshipment/<int:id>', methods=['POST', 'GET'])
 def update_shipment(id):
     db_connection = connect_to_database()
-    query = f"SELECT * FROM `Shipments` WHERE `shipmentID` = {id};"
-    result = execute_query(db_connection, query).fetchall()
+    query = f"""SELECT s.shipmentID, o.orderDetails, s.trackingNumber, s.dateShipped, s.dateDelivered
+            FROM `Shipments` s
+            INNER JOIN 
+            (SELECT ord.orderID, CONCAT_WS(" - ", c.email, ord.orderDate, ord.totalPrice) as orderDetails
+            FROM `Orders` ord
+            INNER JOIN `Customers` c ON ord.customerID = c.customerID 
+            ) o ON s.orderID = o.orderID WHERE `shipmentID` = {id};"""
+    result = execute_query(db_connection, query).fetchone()
 
-    find_order_id = f"SELECT `orderID` FROM `Shipments` WHERE `shipmentID` = {id};"
-    find_order_result = execute_query(db_connection, find_order_id).fetchone()
-
-    orders_query = "SELECT `orderID` FROM `Orders`;"
+    orders_query = """SELECT o.orderID, Concat_WS(" - ", c.email, o.orderDate, o.totalPrice) as orderDetails
+            FROM `Orders` o
+            INNER JOIN `Customers` c ON o.customerID = c.customerID;"""
     orders_result = execute_query(db_connection, orders_query).fetchall()
     return render_template('updateshipment.html', shipment = result, orders = orders_result)
 

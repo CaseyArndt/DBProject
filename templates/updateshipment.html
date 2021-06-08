@@ -13,25 +13,25 @@
             <div class="col">
                 <label for="order">Order</label>
                 <select class="form-select" name="order" id ="order">
-                    <option selected value="{{shipment[0][1]}}">{{shipment[0][1]}}</option>
+                    <option selected value="{{shipment[0]}}">{{shipment[1]}}</option>
                     {% for order in orders %}
-                    {% if order[0] != shipment[0][1] %}
-                        <option value="{{order[0]}}">{{order[0]}}</option>
+                    {% if order[0] != shipment[0] %}
+                        <option value="{{order[0]}}">{{order[1]}}</option>
                     {% endif %}
                     {% endfor %}
                 </select>
             </div>
             <div class="col">
                 <label for="tracking_number">Tracking Number</label>
-                <input type="text" class="form-control" name="tracking_number" id ="tracking_number" value="{{shipment[0][2]}}">
+                <input type="text" class="form-control" name="tracking_number" id ="tracking_number" value="{{shipment[2]}}">
             </div>
             <div class="col">
                 <label for="date_shipped">Date Shipped</label>
-                <input type="date" class="form-control" name="date_shipped" id ="date_shipped" value ="{{shipment[0][3]}}">
+                <input type="date" class="form-control" name="date_shipped" id ="date_shipped" value ="{{shipment[3]}}">
             </div>
             <div class="col">
                 <label for="date_delivered">Date Delivered</label>
-                <input type="date" class="form-control" name="date_delivered" id ="date_delivered" value ="{{shipment[0][4]}}">
+                <input type="date" class="form-control" name="date_delivered" id ="date_delivered" value ="{{shipment[4]}}">
             </div>
         </div>
         <br>
